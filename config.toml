@@ -22,7 +22,6 @@ nav_items = [
 
 accounts = [
     { link = "https://github.com/itmecho", devicon = "devicon-github-plain" },
-    { link = "https://gitlab.org/itmecho", devicon = "devicon-gitlab-plain" },
     { link = "https://twitter.com/_itmecho", devicon = "devicon-twitter-plain" },
 ]
 
