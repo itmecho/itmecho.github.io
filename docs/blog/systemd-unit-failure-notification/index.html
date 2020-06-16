@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <!-- viewport-fit=cover is to support iPhone X rounded corners and notch in landscape-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+
+      <title>itmecho</title>
+
+      <!-- CSS -->
+      <link rel="stylesheet" href="https:&#x2F;&#x2F;itmecho.com&#x2F;itmecho.css">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Expletus+Sans:wght@700&family=Open+Sans:ital,wght@0,300;0,700;1,300;1,700&family=Inconsolata&display=swap">
+      <link rel="stylesheet" href="https://cdn.rawgit.com/konpa/devicon/df6431e323547add1b4cf45992913f15286456d3/devicon.min.css">
+      <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+
+      
+
+      
+      
+    </head>
+
+    <body>
+        <div>
+            <!-- Mobile menu -->
+            <header class="lg:hidden fixed top-0 left-0 right-0 flex items-center justify-between p-4 bg-white">
+                <h1 class="font-brand text-3xl"><a href="/">itmecho</a></h1>
+
+                
+                <ul class="flex items-center text-lg">
+                    
+                    <li><a class="px-3" href="&#x2F;blog">Blog</a></li>
+                    
+                </ul>
+                
+                <div class="flex justify-between items-center text-xl">
+                    
+                        <a class="px-2" href="https:&#x2F;&#x2F;github.com&#x2F;itmecho"><i class="devicon-github-plain"></i></a>
+                    
+                        <a class="px-2" href="https:&#x2F;&#x2F;twitter.com&#x2F;_itmecho"><i class="devicon-twitter-plain"></i></a>
+                    
+                </div>
+            </header>
+
+            <!-- Full screen sidebar menu -->
+            <aside class="hidden lg:flex fixed top-0 left-0 bottom-0 flex-col justify-between w-64 p-8">
+                <section class="flex flex-col justify-center items-center w-full">
+                    <h1 class="font-brand text-4xl mb-8">
+                        <a href="/">itmecho</a>
+                    </h1>
+                    
+                        <ul>
+                        
+                            <li><a href="&#x2F;blog">Blog</a></li>
+                        
+                        </ul>
+                    
+                </section>
+                <section class="flex justify-around">
+                    
+                        <a href="https:&#x2F;&#x2F;github.com&#x2F;itmecho"><i class="devicon-github-plain"></i></a>
+                    
+                        <a href="https:&#x2F;&#x2F;twitter.com&#x2F;_itmecho"><i class="devicon-twitter-plain"></i></a>
+                    
+                </section>
+            </aside>
+
+            <main class="pt-20 lg:pt-0 lg:pl-64">
+                <section class="flex justify-center items-center lg:min-h-screen w-full p-8 lg:p-32">
+                    
+<article class="post w-screen lg:max-w-6xl px-8">
+    <h1 class="font-bold text-4xl mb-4 ">Systemd unit failure notification</h1>
+    <small>2020-06-15 | 3 minutes</small>
+    <hr class="mt-2 mb-8">
+    <p>In this post, we will be configuring a systemd unit which will send a notification to a slack channel when a systemd unit enters the failed state. This is achieved using the <a href="https://www.freedesktop.org/software/systemd/man/systemd.unit.html#OnFailure="><code>OnFailure</code></a> setting in the <code>Unit</code> section.</p>
+<h3 id="the-alerting-script">The alerting script</h3>
+<p>We start off by creating a script which will be run by the systemd unit. This script takes one argument, the name of the unit that failed and sends a formatted message to a slack webhook.</p>
+<pre style="background-color:#282828;">
+<code><span style="font-style:italic;color:#928374;">#!/bin/bash
+
+# Set your slack webhook url here
+</span><span style="color:#fdf4c1;">SLACK_WEBHOOK_URL</span><span style="color:#fe8019;">=</span><span style="color:#b8bb26;">&quot;&quot;
+
+</span><span style="color:#fdf4c1;">unit</span><span style="color:#fe8019;">=</span><span style="color:#b8bb26;">$</span><span style="color:#fdf4c1;">1
+
+</span><span style="color:#fabd2f;">read </span><span style="color:#fdf4c1;">-d </span><span style="color:#b8bb26;">&#39;&#39;</span><span style="color:#fdf4c1;"> payload </span><span style="color:#fe8019;">&lt;&lt; </span><span style="color:#fa5c4b;">EOF</span><span style="color:#fdf4c1;">
+{
+    &quot;icon_emoji&quot;: &quot;:fire:&quot;,
+    &quot;username&quot;: &quot;alertbot&quot;,
+    &quot;attachments&quot;: [
+        {
+            &quot;fallback&quot;: &quot;Systemd: ${unit} failed to start&quot;,
+            &quot;color&quot;: &quot;danger&quot;,
+            &quot;title&quot;: &quot;Systemd: ${unit} failed to start&quot;,
+            &quot;text&quot;: &quot;The ${unit} systemd unit failed to start!&quot;
+        }
+    ]
+}
+EOF</span><span style="background-color:#932b1e;color:#fdf4c1;">
+</span><span style="color:#fdf4c1;">
+curl \
+        --silent \
+        --output /dev/null \
+        -X POST \
+        -H </span><span style="color:#b8bb26;">&#39;Content-Type: application/json&#39; </span><span style="color:#fdf4c1;">\
+        --data </span><span style="color:#b8bb26;">&quot;${</span><span style="color:#fdf4c1;">payload</span><span style="color:#b8bb26;">}&quot; </span><span style="color:#fdf4c1;">$SLACK_WEBHOOK_URL
+</span></code></pre>
+<p>Once you've set the <code>SLACK_WEBHOOK_URL</code> variable, feel free to test the script using the following command:</p>
+<pre style="background-color:#282828;">
+<code><span style="color:#fdf4c1;">/usr/local/bin/systemd-alert test
+</span></code></pre>
+<p><strong>NOTE:</strong> Don't forget to make the script executable using <code>chmod 700 /usr/local/bin/systemd-alert</code></p>
+<p>You should see an alert in your configured slack channel with the message:</p>
+<blockquote>
+<p>Systemd: test failed to start</p>
+</blockquote>
+<h3 id="the-systemd-alerting-unit">The systemd alerting unit</h3>
+<p>Next up we're creating a systemd unit that will be started when another unit fails. Create the file <code>/lib/systemd/system/systemd-alert@.service</code> with the content:</p>
+<pre style="background-color:#282828;">
+<code><span style="color:#fa5c4b;">[Unit]
+</span><span style="color:#fdf4c1;">Description</span><span style="color:#fe8019;">=</span><span style="color:#fdf4c1aa;">Systemd </span><span style="color:#fa5c4b;">alert
+
+[Service]
+</span><span style="color:#fdf4c1;">Type</span><span style="color:#fe8019;">=</span><span style="color:#fdf4c1aa;">oneshot
+</span><span style="color:#fdf4c1;">ExecStart</span><span style="color:#fe8019;">=/</span><span style="color:#fdf4c1aa;">usr</span><span style="color:#fe8019;">/</span><span style="color:#fdf4c1aa;">local</span><span style="color:#fe8019;">/</span><span style="color:#fdf4c1aa;">bin</span><span style="color:#fe8019;">/</span><span style="color:#fdf4c1aa;">systemd</span><span style="color:#fe8019;">-</span><span style="color:#fdf4c1aa;">alert </span><span style="color:#fa5c4b;">%i
+</span><span style="color:#fdf4c1;">Restart</span><span style="color:#fe8019;">=</span><span style="color:#fdf4c1aa;">never
+</span></code></pre>
+<p>This is a super simple unit which will just execute the script <code>/usr/local/bin/systemd-alert</code>, passing the instance name as an argument. The instance name is defined when we start the unit by adding it after the <code>@</code> symbol in the service file name.</p>
+<p><strong>Example</strong>: <code>sudo systemctl start systemd-alert@test.service</code> will execute <code>/usr/local/bin/systemd-alert test</code></p>
+<h3 id="triggering-the-alert">Triggering the alert</h3>
+<p>Finally, we just need to add the <code>OnFailure</code> setting to the <code>Unit</code> section of another systemd unit we want to be alerted for. Once that unit enters the <code>failed</code> state, systemd will start the unit specified by <code>OnFailure</code>, sending the alert notification.</p>
+<pre style="background-color:#282828;">
+<code><span style="color:#fa5c4b;">[Unit]
+</span><span style="color:#fe8019;">...
+</span><span style="color:#fdf4c1;">OnFailure</span><span style="color:#fe8019;">=</span><span style="color:#fdf4c1aa;">systemd</span><span style="color:#fe8019;">-</span><span style="color:#fdf4c1aa;">alert</span><span style="color:#fa5c4b;">@nginx</span><span style="color:#fe8019;">.</span><span style="color:#fdf4c1aa;">service
+</span><span style="color:#fa5c4b;">
+[Service]
+</span><span style="color:#fe8019;">...
+</span></code></pre>
+<p>With that done, we should be good to go! You can test it out by making sure your unit will fail (maybe make a typo in the <code>ExecStart</code> command) and starting it.</p>
+<p>This is very useful for dynamic environments such as applications running on AWS Spot Instances as you will recieve an alert if your server fails to start a critical service which could otherwise go unnoticed. In an upcoming blog post, I will be talking about how to use a tool named <a href="https://github.com/itmecho/germinate"><code>germinate</code></a> to enrich the alert message with data from other sources at runtime. For example, loading the value of an AWS EC2 instance tag to get more context.</p>
+
+</article>
+
+
+                </section>
+            </main>
+
+        </div>
+
+    </body>
+
+</html>
