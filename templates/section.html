@@ -1,0 +1,36 @@
+{% extends "index.html" %}
+
+{% block content %}
+<section class="flex flex-col">
+{% for page in paginator.pages %}
+    <article class="max-w-4xl mb-16">
+        <h1>
+            <a class="text-2xl font-bold" href="{{ page.permalink }}">{{ page.title }}</a>
+        </h1>
+        <small class="text-xs">{{ page.date }} | {{ page.reading_time }} minutes</small>
+        <hr class="mb-4">
+        <p>{{ page.content | striptags | truncate(size=150, end="...") }}</p>
+    </article>
+{% endfor %}
+
+{% if paginator.number_pagers > 1 %}
+    <article class="flex justify-between items-center">
+        {% if paginator.next %}
+        <a class="px-4 py-2 bg-black text-white" href="{{ paginator.next }}">Older Posts</a>
+        {% else %}
+        <div class="px-4 py-2 invisible">Older Posts</div>
+        {% endif %}
+
+        <p>{{ paginator.current_index }} / {{ paginator.number_pagers }}</p>
+
+        {% if paginator.previous %}
+        <a class="px-4 py-2 bg-black text-white" href="{{ paginator.previous }}">Newer Posts</a>
+        {% else %}
+        <div class="px-4 py-2 invisible">Newer Posts</div>
+        {% endif %}
+    </article>
+{% endif %}
+
+</section>
+
+{% endblock content %}

@@ -1,0 +1,67 @@
+$bg-light: #e2e8f0;
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
+}
+
+@media screen and (max-width: 1024px) {
+    body {
+        font-size: 16px;
+    }
+
+    .post pre {
+        padding: 1rem !important;
+    }
+}
+
+.font-brand {
+    font-family: "Expletus Sans";
+}
+
+.post {
+    p {
+        margin-bottom: 2rem;
+
+        code {
+            background-color: $bg-light;
+            border-radius: 5px;
+            padding: 0.25rem 0.5rem;
+        }
+    }
+
+    h3 {
+        font-size: 2.25rem;
+        margin-bottom: 1rem;
+    }
+
+    a {
+        text-decoration: underline;
+        transition: 150ms;
+        &:hover {
+            color: #4299e1;
+        }
+    }
+
+    code, pre {
+        font-family: "Inconsolata";
+    }
+
+    pre {
+        margin-bottom: 2rem;
+        padding: 2rem;
+        overflow-x: scroll;
+    }
+
+    blockquote {
+        margin-bottom: 2rem;
+        padding: 1rem 2rem;
+
+        background-color: $bg-light;
+        border-left: 2px solid #000;
+
+        p {
+            margin: 0;
+        }
+    }
+}
