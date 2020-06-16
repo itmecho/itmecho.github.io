@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <!-- viewport-fit=cover is to support iPhone X rounded corners and notch in landscape-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+
+      <title>itmecho</title>
+
+      <!-- CSS -->
+      <link rel="stylesheet" href="https:&#x2F;&#x2F;itmecho.com&#x2F;itmecho.css">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Expletus+Sans:wght@700&family=Open+Sans:ital,wght@0,300;0,700;1,300;1,700&family=Inconsolata&display=swap">
+      <link rel="stylesheet" href="https://cdn.rawgit.com/konpa/devicon/df6431e323547add1b4cf45992913f15286456d3/devicon.min.css">
+      <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+
+      
+
+      
+      
+    </head>
+
+    <body>
+        <div>
+            <!-- Mobile menu -->
+            <header class="lg:hidden fixed top-0 left-0 right-0 flex items-center justify-between p-4 bg-white">
+                <h1 class="font-brand text-3xl"><a href="/">itmecho</a></h1>
+
+                
+                <ul class="flex items-center text-lg">
+                    
+                    <li><a class="px-3" href="&#x2F;blog">Blog</a></li>
+                    
+                </ul>
+                
+                <div class="flex justify-between items-center text-xl">
+                    
+                        <a class="px-2" href="https:&#x2F;&#x2F;github.com&#x2F;itmecho"><i class="devicon-github-plain"></i></a>
+                    
+                        <a class="px-2" href="https:&#x2F;&#x2F;twitter.com&#x2F;_itmecho"><i class="devicon-twitter-plain"></i></a>
+                    
+                </div>
+            </header>
+
+            <!-- Full screen sidebar menu -->
+            <aside class="hidden lg:flex fixed top-0 left-0 bottom-0 flex-col justify-between w-64 p-8">
+                <section class="flex flex-col justify-center items-center w-full">
+                    <h1 class="font-brand text-4xl mb-8">
+                        <a href="/">itmecho</a>
+                    </h1>
+                    
+                        <ul>
+                        
+                            <li><a href="&#x2F;blog">Blog</a></li>
+                        
+                        </ul>
+                    
+                </section>
+                <section class="flex justify-around">
+                    
+                        <a href="https:&#x2F;&#x2F;github.com&#x2F;itmecho"><i class="devicon-github-plain"></i></a>
+                    
+                        <a href="https:&#x2F;&#x2F;twitter.com&#x2F;_itmecho"><i class="devicon-twitter-plain"></i></a>
+                    
+                </section>
+            </aside>
+
+            <main class="pt-20 lg:pt-0 lg:pl-64">
+                <section class="flex justify-center items-center lg:min-h-screen w-full p-8 lg:p-32">
+                    
+<article class="post w-screen lg:max-w-6xl px-8">
+    <h1 class="font-bold text-4xl mb-4 ">Set defaults for environment variables</h1>
+    <small>2020-06-16 | 2 minutes</small>
+    <hr class="mt-2 mb-8">
+    <p>If you're writing a script, sometimes it can be helpful to set a default for a variable. If the variable is optional, this can often remove the need to check if a variable is set before using it and also help keep your output nicely formatted and easy to read. The following script will have different outputs based upon the environment variables we set:</p>
+<pre style="background-color:#282828;">
+<code><span style="font-style:italic;color:#928374;">#!/bin/bash
+
+# Variable with a default
+# This will be overwridden even when it is set to an empty string
+</span><span style="color:#fabd2f;">echo </span><span style="color:#b8bb26;">&quot;with_default: &#39;${</span><span style="color:#fdf4c1;">with_default</span><span style="color:#fe8019;">-</span><span style="color:#b8bb26;">default}&#39;&quot;
+
+</span><span style="font-style:italic;color:#928374;"># Variable with a strict default
+# This will be overwridden unless it is set to an empty string
+</span><span style="color:#fdf4c1;">echo </span><span style="color:#b8bb26;">&quot;with_strict_default: &#39;${</span><span style="color:#fdf4c1;">with_strict_default</span><span style="color:#fe8019;">:-</span><span style="color:#b8bb26;">default}&#39;&quot;
+
+</span><span style="font-style:italic;color:#928374;"># Variable without a default
+</span><span style="color:#fdf4c1;">echo </span><span style="color:#b8bb26;">&quot;no_default: &#39;${</span><span style="color:#fdf4c1;">no_default</span><span style="color:#b8bb26;">}&#39;&quot;
+</span></code></pre>
+<p>Running this script without setting any of the variables will give the following output:</p>
+<pre style="background-color:#282828;">
+<code><span style="color:#fdf4c1;">$ ./default-envs
+with_default: </span><span style="color:#b8bb26;">&#39;default&#39;
+</span><span style="color:#fdf4c1;">with_strict_default: </span><span style="color:#b8bb26;">&#39;default&#39;
+</span><span style="color:#fdf4c1;">no_default: </span><span style="color:#b8bb26;">&#39;&#39;
+</span></code></pre>
+<p>We can override those variables by setting them before running the script or, like in this example, at runtime:</p>
+<pre style="background-color:#282828;">
+<code><span style="color:#fdf4c1;">$ with_default=test1 \
+	with_strict_default=test2 \
+	no_default=test3 \
+	./default-envs
+with_default: </span><span style="color:#b8bb26;">&#39;test1&#39;
+</span><span style="color:#fdf4c1;">with_strict_default: </span><span style="color:#b8bb26;">&#39;test2&#39;
+</span><span style="color:#fdf4c1;">no_default: </span><span style="color:#b8bb26;">&#39;test3&#39;
+</span></code></pre>
+<p>Here you can see that all 3 variables were overridden. Now lets try the same thing but set the variables to empty strings:</p>
+<pre style="background-color:#282828;">
+<code><span style="color:#fdf4c1aa;">$ with_default=&quot;&quot; \
+	with_strict_default=&quot;&quot; \
+	no_default=&quot;&quot; \
+	./default-envs
+with_default: &#39;&#39;
+with_strict_default: &#39;default&#39;
+no_default: &#39;&#39;
+</span></code></pre>
+<p>The first and last variables were overridden but the second variable used the default value. This is due to the strict mode which ignores the variable passed in if it was set to an empty string.</p>
+
+</article>
+
+
+                </section>
+            </main>
+
+        </div>
+
+    </body>
+
+</html>
