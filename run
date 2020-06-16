@@ -1,0 +1,8 @@
+#!/bin/sh
+
+COMMAND=$1
+
+case $COMMAND in
+    "build") zola build -o docs ;;
+    *) zola serve -o docs ;;
+esac
