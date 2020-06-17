@@ -75,7 +75,7 @@
     <small>2020-06-15 | 3 minutes</small>
     <hr class="mt-2 mb-8">
     <p>In this post, we will be configuring a systemd unit which will send a notification to a slack channel when a systemd unit enters the failed state. This is achieved using the <a href="https://www.freedesktop.org/software/systemd/man/systemd.unit.html#OnFailure="><code>OnFailure</code></a> setting in the <code>Unit</code> section.</p>
-<h3 id="the-alerting-script">The alerting script</h3>
+<h2 id="the-alerting-script">The alerting script</h2>
 <p>We start off by creating a script which will be run by the systemd unit. This script takes one argument, the name of the unit that failed and sends a formatted message to a slack webhook.</p>
 <pre style="background-color:#282828;">
 <code><span style="font-style:italic;color:#928374;">#!/bin/bash
@@ -116,7 +116,7 @@ curl \
 <blockquote>
 <p>Systemd: test failed to start</p>
 </blockquote>
-<h3 id="the-systemd-alerting-unit">The systemd alerting unit</h3>
+<h2 id="the-systemd-alerting-unit">The systemd alerting unit</h2>
 <p>Next up we're creating a systemd unit that will be started when another unit fails. Create the file <code>/lib/systemd/system/systemd-alert@.service</code> with the content:</p>
 <pre style="background-color:#282828;">
 <code><span style="color:#fa5c4b;">[Unit]
@@ -129,7 +129,7 @@ curl \
 </span></code></pre>
 <p>This is a super simple unit which will just execute the script <code>/usr/local/bin/systemd-alert</code>, passing the instance name as an argument. The instance name is defined when we start the unit by adding it after the <code>@</code> symbol in the service file name.</p>
 <p><strong>Example</strong>: <code>sudo systemctl start systemd-alert@test.service</code> will execute <code>/usr/local/bin/systemd-alert test</code></p>
-<h3 id="triggering-the-alert">Triggering the alert</h3>
+<h2 id="triggering-the-alert">Triggering the alert</h2>
 <p>Finally, we just need to add the <code>OnFailure</code> setting to the <code>Unit</code> section of another systemd unit we want to be alerted for. Once that unit enters the <code>failed</code> state, systemd will start the unit specified by <code>OnFailure</code>, sending the alert notification.</p>
 <pre style="background-color:#282828;">
 <code><span style="color:#fa5c4b;">[Unit]

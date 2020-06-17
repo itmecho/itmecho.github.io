@@ -30,9 +30,22 @@ body {
         }
     }
 
-    h3 {
+    h2 {
         font-size: 2.25rem;
         margin-bottom: 1rem;
+    }
+
+    h3 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        color: lighten(#000000, 20%);
+    }
+
+    ul {
+        margin-bottom: 2rem;
+        padding-left: 2rem;
+
+        list-style: circle inside;
     }
 
     a {
