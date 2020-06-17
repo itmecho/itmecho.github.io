@@ -1,6 +1,5 @@
 +++
 title = "Sending system logs to Datadog using fluentbit"
-draft = true
 +++
 
 In this post, we'll be using a tool called [`fluentbit`](https://fluentbit.io/) to send logs to a log aggregation platform, in this case Datadog. `fluentbit` allows us to process and enrich our logs before sending them to add additional context. This is extremely useful when trying to hunt down the cause of an issue.
