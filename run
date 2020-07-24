@@ -15,6 +15,7 @@ function newPost() {
     cat > $post <<EOF
 +++
 title = "$1"
+draft = true
 +++
 EOF
     echo $post
