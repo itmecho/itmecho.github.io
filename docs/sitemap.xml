@@ -7,7 +7,14 @@
         <loc>https://itmecho.com/blog/</loc>
     </url>
     <url>
+        <loc>https://itmecho.com/blog/fixing-gpg-agent-ssh-after-adding-short-key/</loc>
+        <lastmod>2020-07-24</lastmod>
+    </url>
+    <url>
         <loc>https://itmecho.com/blog/page/1/</loc>
+    </url>
+    <url>
+        <loc>https://itmecho.com/blog/page/2/</loc>
     </url>
     <url>
         <loc>https://itmecho.com/blog/sending-system-logs-to-datadog-using-fluentbit/</loc>
