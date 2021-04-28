@@ -76,7 +76,7 @@
     <hr class="mt-2 mb-8">
     <p>If you're writing a script, sometimes it can be helpful to set a default for a variable. If the variable is optional, this can often remove the need to check if a variable is set before using it and also help keep your output nicely formatted and easy to read. The following script will have different outputs based upon the environment variables we set:</p>
 <pre style="background-color:#282828;">
-<code><span style="font-style:italic;color:#928374;">#!/bin/bash
+<code class="language-sh" data-lang="sh"><span style="font-style:italic;color:#928374;">#!/bin/bash
 
 # Variable with a default
 # This will be overwridden even when it is set to an empty string
@@ -91,14 +91,14 @@
 </span></code></pre>
 <p>Running this script without setting any of the variables will give the following output:</p>
 <pre style="background-color:#282828;">
-<code><span style="color:#fdf4c1;">$ ./default-envs
+<code class="language-sh" data-lang="sh"><span style="color:#fdf4c1;">$ ./default-envs
 with_default: </span><span style="color:#b8bb26;">&#39;default&#39;
 </span><span style="color:#fdf4c1;">with_strict_default: </span><span style="color:#b8bb26;">&#39;default&#39;
 </span><span style="color:#fdf4c1;">no_default: </span><span style="color:#b8bb26;">&#39;&#39;
 </span></code></pre>
 <p>We can override those variables by setting them before running the script or, like in this example, at runtime:</p>
 <pre style="background-color:#282828;">
-<code><span style="color:#fdf4c1;">$ with_default=test1 \
+<code class="language-sh" data-lang="sh"><span style="color:#fdf4c1;">$ with_default=test1 \
 	with_strict_default=test2 \
 	no_default=test3 \
 	./default-envs

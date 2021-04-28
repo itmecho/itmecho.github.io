@@ -91,17 +91,17 @@ error fetching identities: Invalid key length
 <p>After some digging around online, I found <code>gpg-connect-agent</code> which let me run commands against the agent directly. I tried a load of different commands until I found I could list the SSH keys in the agent with their fingerprints. This made it easy to identify which keys shouldn't be there any more as I could match the keygrips with the MD5 checksums of the SSH public keys in my <code>~/.ssh</code> folder.</p>
 <p>First off I removed the keys I'd generated for pritunl zero and teleport and listed the MD5 checksums of the remaining public keys in my <code>~/.ssh</code> folder</p>
 <pre style="background-color:#282828;">
-<code><span style="color:#fa5c4b;">for</span><span style="color:#fdf4c1aa;"> f </span><span style="color:#fa5c4b;">in </span><span style="color:#fdf4c1aa;">$(</span><span style="color:#fdf4c1;">ls ~/.ssh/</span><span style="color:#fe8019;">*</span><span style="color:#fdf4c1;">.pub</span><span style="color:#fdf4c1aa;">)</span><span style="color:#fe8019;">; </span><span style="color:#fa5c4b;">do
+<code class="language-sh" data-lang="sh"><span style="color:#fa5c4b;">for</span><span style="color:#fdf4c1aa;"> f </span><span style="color:#fa5c4b;">in </span><span style="color:#fdf4c1aa;">$(</span><span style="color:#fdf4c1;">ls ~/.ssh/</span><span style="color:#fe8019;">*</span><span style="color:#fdf4c1;">.pub</span><span style="color:#fdf4c1aa;">)</span><span style="color:#fe8019;">; </span><span style="color:#fa5c4b;">do
   </span><span style="color:#fdf4c1;">ssh-keygen -l -E md5 -f ~/.ssh/$f
 </span><span style="color:#fa5c4b;">done
 </span></code></pre>
 <p>Next I connected to the agent and listed the SSH keys</p>
 <pre style="background-color:#282828;">
-<code><span style="color:#fdf4c1;">gpg-connect-agent </span><span style="color:#b8bb26;">&quot;KEYINFO --ssh-list --ssh-fpr&quot;</span><span style="color:#fdf4c1;"> /bye
+<code class="language-sh" data-lang="sh"><span style="color:#fdf4c1;">gpg-connect-agent </span><span style="color:#b8bb26;">&quot;KEYINFO --ssh-list --ssh-fpr&quot;</span><span style="color:#fdf4c1;"> /bye
 </span></code></pre>
 <p>Then I deleted the keys that weren't in my SSH folder one by one. Each deletion had a pop up asking for confirmation to delete the key and included the comment associated with key so it was easy to check I wasn't removing one of my active keys.</p>
 <pre style="background-color:#282828;">
-<code><span style="color:#fdf4c1;">gpg-connect-agent </span><span style="color:#b8bb26;">&quot;DELETE_KEY SOMELONGKEYGRIP&quot;</span><span style="color:#fdf4c1;"> /bye
+<code class="language-sh" data-lang="sh"><span style="color:#fdf4c1;">gpg-connect-agent </span><span style="color:#b8bb26;">&quot;DELETE_KEY SOMELONGKEYGRIP&quot;</span><span style="color:#fdf4c1;"> /bye
 </span></code></pre>
 <p>Success! The <code>ssh-add -L</code> error had gone and when I tried pulling from a repo, I got the GTK pinentry pop up. Pulling again just worked without the pinentry and I was back to normal!</p>
 

@@ -80,35 +80,35 @@
 <h3 id="installation">Installation</h3>
 <p>We'll be using Debian 10 (Buster) but the documentation has <a href="https://docs.fluentbit.io/manual/installation/linux">installation guides</a> for other systems. The packaged versions of <code>fluentbit</code> go under the name <code>td-agent-bit</code> as the packages are maintained by <a href="https://www.treasuredata.com/">Treasure Data</a>, the original creators of <code>fluentd</code>. To get it installed, use the following commands:</p>
 <pre style="background-color:#282828;">
-<code><span style="color:#fdf4c1;">$ wget -qO - https://packages.fluentbit.io/fluentbit.key </span><span style="color:#fe8019;">| </span><span style="color:#fdf4c1;">sudo apt-key add -
+<code class="language-sh" data-lang="sh"><span style="color:#fdf4c1;">$ wget -qO - https://packages.fluentbit.io/fluentbit.key </span><span style="color:#fe8019;">| </span><span style="color:#fdf4c1;">sudo apt-key add -
 $ echo </span><span style="color:#b8bb26;">&#39;deb https://packages.fluentbit.io/debian/buster buster main&#39; </span><span style="color:#fe8019;">| </span><span style="color:#fdf4c1;">sudo tee /etc/apt/sources.list.d/td-agent-bit.list
 $ sudo apt-get update
 $ sudo apt-get install td-agent-bit
 </span></code></pre>
 <p>We should now have the <code>/opt/td-agent-bit</code> and <code>/etc/td-agent-bit</code> directories as well as a <code>systemd</code> unit available. Use the following commands to check that everything is ready to go</p>
 <pre style="background-color:#282828;">
-<code><span style="color:#fdf4c1;">$ /opt/td-agent-bit/bin/td-agent-bit --version
+<code class="language-sh" data-lang="sh"><span style="color:#fdf4c1;">$ /opt/td-agent-bit/bin/td-agent-bit --version
 $ sudo systemctl status td-agent-bit.service
 </span></code></pre>
 <p>Now we're ready to move onto configuring <code>fluentbit</code>!</p>
 <h3 id="configuration">Configuration</h3>
 <p>The default configuration file can be found at <code>/etc/td-agent-bit/td-agent-bit.conf</code> and contains configuration to output cpu stats to stdout:</p>
 <pre style="background-color:#282828;">
-<code><span style="color:#fa5c4b;">[SERVICE]</span><span style="color:#fdf4c1aa;">
-    # Flush
-    # </span><span style="color:#fe8019;">=====</span><span style="color:#fdf4c1aa;">
-    # Set an interval of seconds before to flush records to a destination
-    </span><span style="color:#fdf4c1;">Flush        </span><span style="color:#d3869b;">5</span><span style="color:#fdf4c1aa;">
+<code class="language-ini" data-lang="ini"><span style="color:#fa5c4b;">[SERVICE]
+</span><span style="color:#fdf4c1aa;">    # Flush
+    # </span><span style="color:#fe8019;">=====
+</span><span style="color:#fdf4c1aa;">    # Set an interval of seconds before to flush records to a destination
+    </span><span style="color:#fdf4c1;">Flush        </span><span style="color:#d3869b;">5
 
-    # Daemon
-    # </span><span style="color:#fe8019;">======</span><span style="color:#fdf4c1aa;">
-    # Instruct Fluent Bit to run in foreground or background mode</span><span style="color:#fe8019;">.
-    </span><span style="color:#fdf4c1;">Daemon       </span><span style="color:#d3869b;">Off</span><span style="color:#fdf4c1aa;">
+</span><span style="color:#fdf4c1aa;">    # Daemon
+    # </span><span style="color:#fe8019;">======
+</span><span style="color:#fdf4c1aa;">    # Instruct Fluent Bit to run in foreground or background mode</span><span style="color:#fe8019;">.
+    </span><span style="color:#fdf4c1;">Daemon       </span><span style="color:#d3869b;">Off
 
-    # Log_Level
-    # </span><span style="color:#fe8019;">=========</span><span style="color:#fdf4c1aa;">
-    # Set the verbosity level of the service</span><span style="color:#fe8019;">,</span><span style="color:#fdf4c1aa;"> values can be</span><span style="color:#fe8019;">:</span><span style="color:#fdf4c1aa;">
-    #
+</span><span style="color:#fdf4c1aa;">    # Log_Level
+    # </span><span style="color:#fe8019;">=========
+</span><span style="color:#fdf4c1aa;">    # Set the verbosity level of the service</span><span style="color:#fe8019;">,</span><span style="color:#fdf4c1aa;"> values can be</span><span style="color:#fe8019;">:
+</span><span style="color:#fdf4c1aa;">    #
     # </span><span style="color:#fe8019;">-</span><span style="color:#fdf4c1aa;"> error
     # </span><span style="color:#fe8019;">-</span><span style="color:#fdf4c1aa;"> warning
     # </span><span style="color:#fe8019;">-</span><span style="color:#fdf4c1aa;"> info
@@ -119,27 +119,27 @@ $ sudo systemctl status td-agent-bit.service
     </span><span style="color:#fdf4c1;">Log_Level    </span><span style="color:#fdf4c1aa;">info
 
     # Parsers_File
-    # </span><span style="color:#fe8019;">============</span><span style="color:#fdf4c1aa;">
-    # Specify an optional </span><span style="color:#b8bb26;">&#39;Parsers&#39;</span><span style="color:#fdf4c1aa;"> configuration file
+    # </span><span style="color:#fe8019;">============
+</span><span style="color:#fdf4c1aa;">    # Specify an optional </span><span style="color:#b8bb26;">&#39;Parsers&#39;</span><span style="color:#fdf4c1aa;"> configuration file
     </span><span style="color:#fdf4c1;">Parsers_File </span><span style="color:#fdf4c1aa;">parsers</span><span style="color:#fe8019;">.</span><span style="color:#fdf4c1aa;">conf
     </span><span style="color:#fdf4c1;">Plugins_File </span><span style="color:#fdf4c1aa;">plugins</span><span style="color:#fe8019;">.</span><span style="color:#fdf4c1aa;">conf
 
     # </span><span style="color:#fabd2f;">HTTP</span><span style="color:#fdf4c1aa;"> Server
-    # </span><span style="color:#fe8019;">===========</span><span style="color:#fdf4c1aa;">
-    # </span><span style="color:#fabd2f;">Enable/Disable</span><span style="color:#fdf4c1aa;"> the built</span><span style="color:#fe8019;">-</span><span style="color:#fdf4c1aa;">in </span><span style="color:#fabd2f;">HTTP</span><span style="color:#fdf4c1aa;"> Server for metrics
+    # </span><span style="color:#fe8019;">===========
+</span><span style="color:#fdf4c1aa;">    # </span><span style="color:#fabd2f;">Enable/Disable</span><span style="color:#fdf4c1aa;"> the built</span><span style="color:#fe8019;">-</span><span style="color:#fdf4c1aa;">in </span><span style="color:#fabd2f;">HTTP</span><span style="color:#fdf4c1aa;"> Server for metrics
     </span><span style="color:#fdf4c1;">HTTP_Server  </span><span style="color:#d3869b;">Off
     </span><span style="color:#fdf4c1;">HTTP_Listen  0.0.0.0
     HTTP_Port    </span><span style="color:#d3869b;">2020
-</span><span style="color:#fa5c4b;">
-[INPUT]
+
+</span><span style="color:#fa5c4b;">[INPUT]
     </span><span style="color:#fdf4c1;">Name </span><span style="color:#fdf4c1aa;">cpu
     </span><span style="color:#fdf4c1;">Tag  </span><span style="color:#fdf4c1aa;">cpu</span><span style="color:#fe8019;">.</span><span style="color:#fdf4c1aa;">local
     # Interval Sec
-    # </span><span style="color:#fe8019;">====</span><span style="color:#fdf4c1aa;">
-    # Read interval (sec) Default</span><span style="color:#fe8019;">: </span><span style="color:#d3869b;">1
+    # </span><span style="color:#fe8019;">====
+</span><span style="color:#fdf4c1aa;">    # Read interval (sec) Default</span><span style="color:#fe8019;">: </span><span style="color:#d3869b;">1
     </span><span style="color:#fdf4c1;">Interval_Sec </span><span style="color:#d3869b;">1
-</span><span style="color:#fa5c4b;">
-[OUTPUT]
+
+</span><span style="color:#fa5c4b;">[OUTPUT]
     </span><span style="color:#fdf4c1;">Name  </span><span style="color:#fdf4c1aa;">stdout
     </span><span style="color:#fdf4c1;">Match </span><span style="color:#fe8019;">*
 </span></code></pre>
@@ -151,7 +151,7 @@ $ sudo systemctl status td-agent-bit.service
 </ul>
 <p>Start the <code>fluentbit</code> service and check the output.</p>
 <pre style="background-color:#282828;">
-<code><span style="color:#fdf4c1;">$ sudo systemctl start td-agent-bit.service
+<code class="language-sh" data-lang="sh"><span style="color:#fdf4c1;">$ sudo systemctl start td-agent-bit.service
 $ journalctl -fu td-agent-bit.service
 ...
 [0] cpu.local: </span><span style="color:#fa5c4b;">[</span><span style="color:#fdf4c1;">1592420609.822015943, {</span><span style="color:#b8bb26;">&quot;cpu_p&quot;</span><span style="color:#fdf4c1;">=&gt;2.500000, </span><span style="color:#b8bb26;">&quot;user_p&quot;</span><span style="color:#fdf4c1;">=&gt;2.250000, </span><span style="color:#b8bb26;">&quot;system_p&quot;</span><span style="color:#fdf4c1;">=&gt;0.250000, ... }</span><span style="color:#fa5c4b;">]
@@ -160,25 +160,25 @@ $ journalctl -fu td-agent-bit.service
 </span></code></pre>
 <p>Everything looks good so we're ready to start modifying the configuration to collect system logs and send them to Datadog. First we want to clear out the default input and add our systemd input. Once we've done that (and removed the comments) we will have something that looks like this:</p>
 <pre style="background-color:#282828;">
-<code><span style="color:#fa5c4b;">[SERVICE]
+<code class="language-ini" data-lang="ini"><span style="color:#fa5c4b;">[SERVICE]
     </span><span style="color:#fdf4c1;">Flush        </span><span style="color:#d3869b;">5
     </span><span style="color:#fdf4c1;">Daemon       </span><span style="color:#d3869b;">Off
     </span><span style="color:#fdf4c1;">Log_Level    </span><span style="color:#fdf4c1aa;">info
     </span><span style="color:#fdf4c1;">Parsers_File </span><span style="color:#fdf4c1aa;">parsers</span><span style="color:#fe8019;">.</span><span style="color:#fdf4c1aa;">conf
     </span><span style="color:#fdf4c1;">Plugins_File </span><span style="color:#fdf4c1aa;">plugins</span><span style="color:#fe8019;">.</span><span style="color:#fdf4c1aa;">conf
     </span><span style="color:#fdf4c1;">HTTP_Server  </span><span style="color:#d3869b;">Off
-</span><span style="color:#fa5c4b;">
-[INPUT]
+
+</span><span style="color:#fa5c4b;">[INPUT]
     </span><span style="color:#fdf4c1;">Name </span><span style="color:#fdf4c1aa;">systemd
     </span><span style="color:#fdf4c1;">Tag </span><span style="color:#fdf4c1aa;">systemd</span><span style="color:#fe8019;">.*
-</span><span style="color:#fa5c4b;">
-[OUTPUT]
+
+</span><span style="color:#fa5c4b;">[OUTPUT]
     </span><span style="color:#fdf4c1;">Name </span><span style="color:#fdf4c1aa;">stdout
     </span><span style="color:#fdf4c1;">Match </span><span style="color:#fe8019;">*
 </span></code></pre>
 <p>Restart the <code>td-agent-bit</code> service again and check the logs. You should see the systemd unit logs start to appear after the 5 second flush interval. Now we are ready to change the output to send the logs to Datadog! All you need to do for that is get an API key and add the output to our configuration.</p>
 <pre style="background-color:#282828;">
-<code><span style="color:#fa5c4b;">[OUTPUT]
+<code class="language-ini" data-lang="ini"><span style="color:#fa5c4b;">[OUTPUT]
     </span><span style="color:#fdf4c1;">Name        </span><span style="color:#fdf4c1aa;">datadog
     </span><span style="color:#fdf4c1;">Match       </span><span style="color:#fe8019;">*
     </span><span style="color:#fdf4c1;">Host        </span><span style="color:#fdf4c1aa;">http</span><span style="color:#fe8019;">-</span><span style="color:#fdf4c1aa;">intake</span><span style="color:#fe8019;">.</span><span style="color:#fdf4c1aa;">logs</span><span style="color:#fe8019;">.</span><span style="color:#fdf4c1aa;">datadoghq</span><span style="color:#fe8019;">.</span><span style="color:#fdf4c1aa;">eu
@@ -190,7 +190,7 @@ $ journalctl -fu td-agent-bit.service
 <p><img src="/assets/img/2020-06-17-datadog-log-1.png" alt="Datadog Log" /></p>
 <p>Instead of configuring Datadog to use these fields, we can remap them using <code>fluentbit</code>. Adding the following <code>FILTER</code> section will rename the <code>_HOSTNAME</code> field to <code>host</code> and the <code>SYSLOG_IDENTIFIER</code> field to <code>service</code>. Make sure to add this section <strong>between</strong> the <code>INPUT</code> and <code>OUTPUT</code> sections.</p>
 <pre style="background-color:#282828;">
-<code><span style="color:#fa5c4b;">[FILTER]
+<code class="language-ini" data-lang="ini"><span style="color:#fa5c4b;">[FILTER]
     </span><span style="color:#fdf4c1;">Name </span><span style="color:#fdf4c1aa;">modify
     </span><span style="color:#fdf4c1;">Match </span><span style="color:#fdf4c1aa;">systemd</span><span style="color:#fe8019;">.*
     </span><span style="color:#fdf4c1;">Rename </span><span style="color:#fabd2f;">_HOSTNAME</span><span style="color:#fdf4c1aa;"> host

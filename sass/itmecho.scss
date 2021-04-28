@@ -48,6 +48,20 @@ body {
         list-style: circle inside;
     }
 
+	ol {
+		padding-left: 2rem;
+
+		list-style: decimal;
+
+		li {
+			margin-bottom: 1rem;
+
+			&:before {
+				font-weight: bold;
+			}
+		}
+	}
+
     a {
         text-decoration: underline;
         transition: 150ms;

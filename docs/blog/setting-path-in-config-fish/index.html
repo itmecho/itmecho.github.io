@@ -70,51 +70,52 @@
             <main class="pt-20 lg:pt-0 lg:pl-64">
                 <section class="flex justify-center items-center lg:min-h-screen w-full p-8 lg:p-32">
                     
-<section class="flex flex-col">
+<article class="post w-screen lg:max-w-6xl px-8">
+    <h1 class="font-bold text-4xl mb-4 ">Setting PATH in config.fish</h1>
+    <small>2021-04-28 | 2 minutes</small>
+    <hr class="mt-2 mb-8">
+    <p>I moved to <code>fish</code> from <code>zsh</code> about a year ago and I'm really glad I did. Combined with <code>starship</code>, it gives me everything I want out of the box. I can just run <code>paru -S fish starship-bin</code> and I get a shell with syntax highlighting, auto completion, and the prompt I want.</p>
+<p>My problem came when I wanted to set my <code>PATH</code> using other environment variables like <code>$HOME</code>. I want my dotfiles to work on both mac and linux as I have to use mac for work and I don't want to clutter my <code>PATH</code> with duplicated paths in diffferent home folders. I tried using the <code>fish_add_path</code> command but it exits with an error when I try using an environment variable as part of the path entry.</p>
+<pre style="background-color:#282828;">
+<code><span style="color:#fdf4c1aa;">$ fish_add_path &#39;$HOME/.local/bin&#39;
+$ echo $status
+1
+</span></code></pre>
+<p>This means that I need set the path each time fish starts up and it took me a while to find a solution that worked. After trying various <code>set</code> commands for <code>PATH</code> and <code>fish_user_paths</code>, I found that explicitly setting my <code>fish_user_paths</code> with global scope in my <code>config.fish</code> works how I need it to.</p>
+<pre style="background-color:#282828;">
+<code><span style="color:#fdf4c1aa;">set -g fish_user_paths $HOME/.local/bin $GOPATH/bin
+</span></code></pre>
+<p>Now everytime I open a new terminal/<code>fish</code> session, this command gets run for the current session. That means any open sessions are unaffected but the new session shows any changes I made to my <code>config.fish</code>. For example:</p>
+<ol>
+<li>Open a terminal and print the path</li>
+</ol>
+<pre style="background-color:#282828;">
+<code><span style="color:#fdf4c1aa;">$ echo $PATH
+/home/iain/.local/bin /home/iain/src/go/bin /usr/bin ...
+</span></code></pre>
+<ol start="2">
+<li>Edit <code>config.fish</code> and add another path</li>
+</ol>
+<pre style="background-color:#282828;">
+<code><span style="color:#fdf4c1aa;">set -g fish_user_paths $HOME/.local/bin $GOPATH/bin $HOME/.cargo/bin
+</span></code></pre>
+<ol start="3">
+<li>Open another terminal and print the path</li>
+</ol>
+<pre style="background-color:#282828;">
+<code><span style="color:#fdf4c1aa;">$ echo $PATH
+/home/iain/.local/bin /home/iain/src/go/bin /home/iain/.cargo/bin /usr/bin ...
+</span></code></pre>
+<ol start="4">
+<li>Check the path is unchanged in the first terminal</li>
+</ol>
+<pre style="background-color:#282828;">
+<code><span style="color:#fdf4c1aa;">$ echo $PATH
+/home/iain/.local/bin /home/iain/src/go/bin /usr/bin ...
+</span></code></pre>
+<p>Now I have a fish shell where I can set the <code>PATH</code> and have it behave like <code>zsh</code> used to which means it works on both mac and linux with the same config!</p>
 
-    <article class="max-w-4xl mb-16">
-        <h1>
-            <a class="text-2xl font-bold" href="https:&#x2F;&#x2F;itmecho.com&#x2F;blog&#x2F;setting-path-in-config-fish&#x2F;">Setting PATH in config.fish</a>
-        </h1>
-        <small class="text-xs">2021-04-28 | 2 minutes</small>
-        <hr class="mb-4">
-        <p>I moved to fish from zsh about a year ago and I&#x27;m really glad I did. Combined with starship, it gives me everything I want out of the box. I can just run paru -S fish starship-bin and I get a shell with syntax highlighting, auto completion, and the prompt...</p>
-    </article>
-
-    <article class="max-w-4xl mb-16">
-        <h1>
-            <a class="text-2xl font-bold" href="https:&#x2F;&#x2F;itmecho.com&#x2F;blog&#x2F;fixing-gpg-agent-ssh-after-adding-short-key&#x2F;">Fixing gpg-agent-ssh after adding short key</a>
-        </h1>
-        <small class="text-xs">2020-07-24 | 3 minutes</small>
-        <hr class="mb-4">
-        <p>First off, I&#x27;ll give a brief overview of my SSH setup. I use gpg-agent&#x27;s SSH functionality as an SSH agent which gives me the benefit of automatically caching the key password after prompting for it once. This persists across all my terminals and programs...</p>
-    </article>
-
-    <article class="max-w-4xl mb-16">
-        <h1>
-            <a class="text-2xl font-bold" href="https:&#x2F;&#x2F;itmecho.com&#x2F;blog&#x2F;sending-system-logs-to-datadog-using-fluentbit&#x2F;">Sending system logs to Datadog using fluentbit</a>
-        </h1>
-        <small class="text-xs">2020-06-17 | 5 minutes</small>
-        <hr class="mb-4">
-        <p>In this post, we&#x27;ll be using a tool called fluentbit to send logs to a log aggregation platform, in this case Datadog. fluentbit allows us to process and enrich our logs before sending them to add additional context. This is extremely useful when trying t...</p>
-    </article>
-
-
-
-    <article class="flex justify-between items-center">
-        
-        <a class="px-4 py-2 bg-black text-white" href="https:&#x2F;&#x2F;itmecho.com&#x2F;blog&#x2F;page&#x2F;2&#x2F;">Older Posts</a>
-        
-
-        <p>1 / 2</p>
-
-        
-        <div class="px-4 py-2 invisible">Newer Posts</div>
-        
-    </article>
-
-
-</section>
+</article>
 
 
                 </section>

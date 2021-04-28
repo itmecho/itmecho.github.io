@@ -3,7 +3,7 @@
 COMMAND=$1
 
 function newPost() {
-    test -d .venv || python -m virtualenv .venv
+    test -d .venv || python -m venv .venv
     . .venv/bin/activate
     pip install -q python-slugify
     slug=$(python -c "from slugify import slugify; print(slugify('$1'))")

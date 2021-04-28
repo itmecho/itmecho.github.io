@@ -78,15 +78,15 @@
 <h2 id="the-alerting-script">The alerting script</h2>
 <p>We start off by creating a script which will be run by the systemd unit. This script takes one argument, the name of the unit that failed and sends a formatted message to a slack webhook.</p>
 <pre style="background-color:#282828;">
-<code><span style="font-style:italic;color:#928374;">#!/bin/bash
+<code class="language-bash" data-lang="bash"><span style="font-style:italic;color:#928374;">#!/bin/bash
 
 # Set your slack webhook url here
 </span><span style="color:#fdf4c1;">SLACK_WEBHOOK_URL</span><span style="color:#fe8019;">=</span><span style="color:#b8bb26;">&quot;&quot;
 
 </span><span style="color:#fdf4c1;">unit</span><span style="color:#fe8019;">=</span><span style="color:#b8bb26;">$</span><span style="color:#fdf4c1;">1
 
-</span><span style="color:#fabd2f;">read </span><span style="color:#fdf4c1;">-d </span><span style="color:#b8bb26;">&#39;&#39;</span><span style="color:#fdf4c1;"> payload </span><span style="color:#fe8019;">&lt;&lt; </span><span style="color:#fa5c4b;">EOF</span><span style="color:#fdf4c1;">
-{
+</span><span style="color:#fabd2f;">read </span><span style="color:#fdf4c1;">-d </span><span style="color:#b8bb26;">&#39;&#39;</span><span style="color:#fdf4c1;"> payload </span><span style="color:#fe8019;">&lt;&lt; </span><span style="color:#fa5c4b;">EOF
+</span><span style="color:#fdf4c1;">{
     &quot;icon_emoji&quot;: &quot;:fire:&quot;,
     &quot;username&quot;: &quot;alertbot&quot;,
     &quot;attachments&quot;: [
@@ -109,7 +109,7 @@ curl \
 </span></code></pre>
 <p>Once you've set the <code>SLACK_WEBHOOK_URL</code> variable, feel free to test the script using the following command:</p>
 <pre style="background-color:#282828;">
-<code><span style="color:#fdf4c1;">/usr/local/bin/systemd-alert test
+<code class="language-sh" data-lang="sh"><span style="color:#fdf4c1;">/usr/local/bin/systemd-alert test
 </span></code></pre>
 <p><strong>NOTE:</strong> Don't forget to make the script executable using <code>chmod 700 /usr/local/bin/systemd-alert</code></p>
 <p>You should see an alert in your configured slack channel with the message:</p>
@@ -119,7 +119,7 @@ curl \
 <h2 id="the-systemd-alerting-unit">The systemd alerting unit</h2>
 <p>Next up we're creating a systemd unit that will be started when another unit fails. Create the file <code>/lib/systemd/system/systemd-alert@.service</code> with the content:</p>
 <pre style="background-color:#282828;">
-<code><span style="color:#fa5c4b;">[Unit]
+<code class="language-ini" data-lang="ini"><span style="color:#fa5c4b;">[Unit]
 </span><span style="color:#fdf4c1;">Description</span><span style="color:#fe8019;">=</span><span style="color:#fdf4c1aa;">Systemd </span><span style="color:#fa5c4b;">alert
 
 [Service]
@@ -132,11 +132,11 @@ curl \
 <h2 id="triggering-the-alert">Triggering the alert</h2>
 <p>Finally, we just need to add the <code>OnFailure</code> setting to the <code>Unit</code> section of another systemd unit we want to be alerted for. Once that unit enters the <code>failed</code> state, systemd will start the unit specified by <code>OnFailure</code>, sending the alert notification.</p>
 <pre style="background-color:#282828;">
-<code><span style="color:#fa5c4b;">[Unit]
+<code class="language-ini" data-lang="ini"><span style="color:#fa5c4b;">[Unit]
 </span><span style="color:#fe8019;">...
 </span><span style="color:#fdf4c1;">OnFailure</span><span style="color:#fe8019;">=</span><span style="color:#fdf4c1aa;">systemd</span><span style="color:#fe8019;">-</span><span style="color:#fdf4c1aa;">alert</span><span style="color:#fa5c4b;">@nginx</span><span style="color:#fe8019;">.</span><span style="color:#fdf4c1aa;">service
-</span><span style="color:#fa5c4b;">
-[Service]
+
+</span><span style="color:#fa5c4b;">[Service]
 </span><span style="color:#fe8019;">...
 </span></code></pre>
 <p>With that done, we should be good to go! You can test it out by making sure your unit will fail (maybe make a typo in the <code>ExecStart</code> command) and starting it.</p>
