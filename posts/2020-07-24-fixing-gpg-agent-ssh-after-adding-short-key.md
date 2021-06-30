@@ -1,6 +1,8 @@
-+++
-title = "Fixing gpg-agent-ssh after adding short key"
-+++
+---
+slug: 'fixing-gpg-agent-ssh-after-adding-short-key'
+date: '2020-07-24'
+title: 'Fixing gpg-agent-ssh after adding short key'
+---
 
 First off, I'll give a brief overview of my SSH setup. I use `gpg-agent`'s SSH functionality as an SSH agent which gives me the benefit of automatically caching the key password after prompting for it once. This persists across all my terminals and programs which is great as when I'm running an ansible playbook that pulls in a lot of private role dependencies, I don't have to constantly put my password in. I used [this guide](https://wiki.archlinux.org/index.php/GnuPG#SSH_agent) to set up SSH to use the `gpg-agent`.
 
@@ -22,9 +24,11 @@ error fetching identities: Invalid key length
 I made a [post on reddit](https://www.reddit.com/r/linuxquestions/comments/hsaq2w/gpgagent_sshagent_stuck_with_bad_key/) about it but I didn't get any responses for 7 days. At this point, it was annoying me enough to have another crack at it.
 
 ## The Solution
+
 After some digging around online, I found `gpg-connect-agent` which let me run commands against the agent directly. I tried a load of different commands until I found I could list the SSH keys in the agent with their fingerprints. This made it easy to identify which keys shouldn't be there any more as I could match the keygrips with the MD5 checksums of the SSH public keys in my `~/.ssh` folder.
 
 First off I removed the keys I'd generated for pritunl zero and teleport and listed the MD5 checksums of the remaining public keys in my `~/.ssh` folder
+
 ```sh
 for f in $(ls ~/.ssh/*.pub); do
   ssh-keygen -l -E md5 -f ~/.ssh/$f
@@ -32,11 +36,13 @@ done
 ```
 
 Next I connected to the agent and listed the SSH keys
+
 ```sh
 gpg-connect-agent "KEYINFO --ssh-list --ssh-fpr" /bye
 ```
 
 Then I deleted the keys that weren't in my SSH folder one by one. Each deletion had a pop up asking for confirmation to delete the key and included the comment associated with key so it was easy to check I wasn't removing one of my active keys.
+
 ```sh
 gpg-connect-agent "DELETE_KEY SOMELONGKEYGRIP" /bye
 ```

@@ -1,0 +1,51 @@
+.post-content h2,
+.post-content h3 {
+  @apply mt-8;
+}
+
+.post-content h2 {
+  @apply text-3xl;
+}
+
+.post-content h2:before,
+.post-content h3:before {
+  content: '» ';
+  position: relative;
+  top: -2px;
+}
+
+.post-content h3 {
+  @apply text-2xl;
+}
+
+.post-content p {
+  @apply py-4;
+  line-height: 1.8;
+}
+
+.post-content p > code {
+  @apply p-1 rounded bg-purple-700 text-sm;
+  position: relative;
+  top: -2px;
+}
+
+.post-content pre {
+  @apply rounded bg-purple-700 p-8 mx-2 my-8 overflow-auto;
+}
+
+.post-content img {
+  @apply my-4;
+}
+
+.post-content ul {
+  @apply ml-16;
+  list-style: disc;
+}
+
+.post-content a {
+  @apply text-yellow-300 duration-150;
+}
+
+.post-content a:hover {
+  @apply text-yellow-400;
+}

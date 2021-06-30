@@ -1,16 +1,26 @@
 module.exports = {
   siteMetadata: {
-    title: "itmecho.com",
+    title: 'itmecho',
+    github: 'https://github.com/itmecho',
+    twitter: 'https://twitter.com/_itmecho',
   },
   plugins: [
-    "gatsby-transformer-remark",
     {
-      resolve: "gatsby-source-filesystem",
+      resolve: 'gatsby-source-filesystem',
       options: {
-        name: "pages",
-        path: "./src/pages/",
+        name: 'pages',
+        path: './src/pages/',
       },
-      __key: "pages",
+      __key: 'pages',
     },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'markdown-pages',
+        path: './posts/',
+      },
+      __key: 'posts',
+    },
+    'gatsby-transformer-remark',
   ],
 };

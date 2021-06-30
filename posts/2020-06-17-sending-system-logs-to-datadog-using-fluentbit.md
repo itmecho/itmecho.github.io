@@ -1,10 +1,13 @@
-+++
-title = "Sending system logs to Datadog using fluentbit"
-+++
+---
+slug: 'sending-system-logs-to-datadog-using-fluentbit'
+date: '2020-06-17'
+title: 'Sending system logs to Datadog using fluentbit'
+---
 
 In this post, we'll be using a tool called [`fluentbit`](https://fluentbit.io/) to send logs to a log aggregation platform, in this case Datadog. `fluentbit` allows us to process and enrich our logs before sending them to add additional context. This is extremely useful when trying to hunt down the cause of an issue.
 
 ## `fluentbit`
+
 `fluentbit` is a light weight tool written in C to collect, parse, filter, and send logs to multiple outputs including `stdout`, files, and external providers like Datadog. It is part of the [Cloud Native Computing Foundation](https://www.cncf.io/) as a subproject of [`fluentd`](https://www.fluentd.org/). `fluentd` can do everything fluentbit can, however it's written in ruby (and C) which is not as easy to deploy as the single binary you get with `fluentbit` due to the possibility that the plugins will have dependency version conflicts. You can read the [docs](https://docs.fluentbit.io/manual/about/fluentd-and-fluent-bit) for a more in depth comparison.
 
 ### Installation
@@ -84,9 +87,9 @@ The default configuration file can be found at `/etc/td-agent-bit/td-agent-bit.c
 
 This configuration has 3 sections:
 
-* `SERVICE` - general configuration options
-* `INPUT` - a cpu input which will collect cpu metrics every 1 second
-* `OUTPUT` - match all our logs and send them to std out
+- `SERVICE` - general configuration options
+- `INPUT` - a cpu input which will collect cpu metrics every 1 second
+- `OUTPUT` - match all our logs and send them to std out
 
 Start the `fluentbit` service and check the output.
 
@@ -135,7 +138,7 @@ Now all that's left to do is restart the `td-agent-bit` service and we should st
 
 If we look at our logs in Datadog, we can see that the host and service fields are blank. However, the logs do contain this information.
 
-![Datadog Log](/assets/img/2020-06-17-datadog-log-1.png)
+![Datadog Log](/images/2020-06-17-datadog-log-1.png)
 
 Instead of configuring Datadog to use these fields, we can remap them using `fluentbit`. Adding the following `FILTER` section will rename the `_HOSTNAME` field to `host` and the `SYSLOG_IDENTIFIER` field to `service`. Make sure to add this section **between** the `INPUT` and `OUTPUT` sections.
 
@@ -149,4 +152,4 @@ Instead of configuring Datadog to use these fields, we can remap them using `flu
 
 Restart the service and check Datadog again. You should now see that the `host` and `service` fields are set correctly.
 
-![Datadog Log](/assets/img/2020-06-17-datadog-log-2.png)
+![Datadog Log](/images/2020-06-17-datadog-log-2.png)
