@@ -9,14 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mantine/core": "^2.3.2",
+    "@mantine/hooks": "^2.3.2",
+    "@mantine/prism": "^2.3.2",
     "next": "11.1.0",
+    "prism-react-renderer": "^1.2.1",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-jss": "^10.7.1"
   },
   "devDependencies": {
     "@types/react": "17.0.19",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.0",
+    "prettier": "^2.3.2",
     "typescript": "4.3.5"
   }
 }
