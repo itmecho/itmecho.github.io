@@ -1,10 +1,11 @@
-+++
-title = "Sending system logs to Datadog using fluentbit"
-+++
+---
+title: "Sending system logs to Datadog using fluentbit"
+---
 
 In this post, we'll be using a tool called [`fluentbit`](https://fluentbit.io/) to send logs to a log aggregation platform, in this case Datadog. `fluentbit` allows us to process and enrich our logs before sending them to add additional context. This is extremely useful when trying to hunt down the cause of an issue.
 
 ## `fluentbit`
+
 `fluentbit` is a light weight tool written in C to collect, parse, filter, and send logs to multiple outputs including `stdout`, files, and external providers like Datadog. It is part of the [Cloud Native Computing Foundation](https://www.cncf.io/) as a subproject of [`fluentd`](https://www.fluentd.org/). `fluentd` can do everything fluentbit can, however it's written in ruby (and C) which is not as easy to deploy as the single binary you get with `fluentbit` due to the possibility that the plugins will have dependency version conflicts. You can read the [docs](https://docs.fluentbit.io/manual/about/fluentd-and-fluent-bit) for a more in depth comparison.
 
 ### Installation
@@ -84,9 +85,9 @@ The default configuration file can be found at `/etc/td-agent-bit/td-agent-bit.c
 
 This configuration has 3 sections:
 
-* `SERVICE` - general configuration options
-* `INPUT` - a cpu input which will collect cpu metrics every 1 second
-* `OUTPUT` - match all our logs and send them to std out
+- `SERVICE` - general configuration options
+- `INPUT` - a cpu input which will collect cpu metrics every 1 second
+- `OUTPUT` - match all our logs and send them to std out
 
 Start the `fluentbit` service and check the output.
 

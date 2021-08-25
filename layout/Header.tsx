@@ -34,7 +34,7 @@ const useStyles = createUseStyles(
   { theming }
 );
 
-const navigationLinks = [{ text: "Blog", href: "#" }];
+const navigationLinks = [{ text: "Blog", href: "/blog" }];
 
 export default function Header() {
   const classes = useStyles();
