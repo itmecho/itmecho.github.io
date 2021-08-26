@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@itmecho/components/*": ["./components/*"],
+      "@itmecho/layout/*": ["./layout/*"],
       "@itmecho/lib/*": ["./lib/*"]
     }
   },

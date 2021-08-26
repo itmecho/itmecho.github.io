@@ -5,15 +5,15 @@ const navigationLinks = [{ text: 'Blog', href: '/blog' }];
 
 export default function Header() {
   return (
-    <div className="container mx-auto">
+    <header>
       <Link href="/">
-        <h1>itmecho.com</h1>
+        <h1 className="font-brand">itmecho.com</h1>
       </Link>
       <nav>
         {navigationLinks.map(({ text, href }) => (
           <a href={href}>{text}</a>
         ))}
       </nav>
-    </div>
+    </header>
   );
 }

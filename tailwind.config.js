@@ -1,11 +1,21 @@
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
   purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: 'class',
   theme: {
-    extend: {},
+    fontFamily: {
+      sans: ['Open Sans', ...defaultTheme.fontFamily.sans],
+      mono: ['Inconsolata', ...defaultTheme.fontFamily.mono],
+    },
+    extend: {
+      fontFamily: {
+        brand: 'Expletus Sans',
+      },
+    },
   },
   variants: {
     extend: {},
   },
   plugins: [],
-}
+};
