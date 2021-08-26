@@ -1,33 +1,33 @@
-import fs from "fs";
-import matter from "gray-matter";
-import path from "path";
-
-interface Post {
-  title: string;
-}
+import { loadAllPostMeta, PostMeta } from '@itmecho/lib/content';
+import { Paper, Text, Title } from '@mantine/core';
+import fs from 'fs';
+import matter from 'gray-matter';
+import path from 'path';
 
 interface Props {
-  posts: Post[];
+  posts: PostMeta[];
 }
 
 export default function Blog({ posts }: Props) {
-  console.log(posts);
-  return <div></div>;
+  return (
+    <>
+      <Title>Blog</Title>
+      {posts.map((p) => (
+        <Paper>
+          <Title>{p.title}</Title>
+          <Text>{p.summary}</Text>
+        </Paper>
+      ))}
+    </>
+  );
 }
 
-const postsDir = path.join(process.cwd(), "posts");
-
 export async function getStaticProps() {
-  const files = fs.readdirSync(postsDir);
-  const posts = files
-    .map((f) => path.join(postsDir, f))
-    .map((f) => fs.readFileSync(f))
-    .map((contents) => matter(contents))
-    .map((m) => ({ title: m.data.title }));
+  const postList = loadAllPostMeta();
 
   return {
     props: {
-      posts,
+      postList,
     },
   };
 }
