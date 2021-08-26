@@ -12,7 +12,8 @@ export default function BlogPost({ post }: Props) {
 
   return (
     <>
-      <h1>{post.title}</h1>
+      <img src={post.featureImage} alt="Feature image" />
+      <h1 className="text-4xl font-bold mb-8">{post.title}</h1>
       <Component />
     </>
   );

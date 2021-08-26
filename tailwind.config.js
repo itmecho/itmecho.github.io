@@ -12,10 +12,15 @@ module.exports = {
       fontFamily: {
         brand: 'Expletus Sans',
       },
+      scale: {
+        101: '1.01',
+      },
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      transform: ['hover'],
+    },
   },
   plugins: [],
 };

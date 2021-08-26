@@ -1,15 +1,16 @@
-import { readdirSync, readFileSync } from 'fs';
+import { existsSync, readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 import matter from 'gray-matter';
 import readingTime from 'reading-time';
 import { bundleMDX } from 'mdx-bundler';
 
-const postsDir = join(process.cwd(), 'posts');
+const postsDir = join(process.cwd(), 'content', 'posts');
 
 interface Frontmatter {
   title: string;
   summary: string;
   date: string;
+  featureImage: string;
 }
 
 export interface PostMeta extends Frontmatter {
@@ -39,12 +40,20 @@ function getPostMeta(fileName: string, fileData: string): PostMeta {
     throw new Error(`Post has an invalid date (${data.date}): ${fileName}`);
   }
 
+  const slug = fileName.replace(/.mdx?$/, '');
+  const featureImage = join(process.cwd(), 'public', 'images', slug, 'feature.jpg');
+
+  if (!existsSync(featureImage)) {
+    throw new Error(`Post has no feature image (${featureImage}): ${fileName}`);
+  }
+
   return {
     title: data.title,
     summary: data.summary,
     date: data.date,
+    featureImage: featureImage.replace(join(process.cwd(), 'public'), ''),
     readingTime: readingTime(content).text,
-    slug: fileName.replace(/.mdx?$/, ''),
+    slug,
   };
 }
 
@@ -55,12 +64,14 @@ export function listPostFiles(): string[] {
 export function loadAllPostMeta() {
   const files = listPostFiles();
 
-  return files.reduce((allMeta: PostMeta[], file: string) => {
-    const fileData = readFileSync(join(postsDir, file), 'utf-8');
-    const meta = getPostMeta(file, fileData);
+  return files
+    .reduce((allMeta: PostMeta[], file: string) => {
+      const fileData = readFileSync(join(postsDir, file), 'utf-8');
+      const meta = getPostMeta(file, fileData);
 
-    return [meta, ...allMeta];
-  }, []);
+      return [meta, ...allMeta];
+    }, [])
+    .sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
 }
 
 export async function loadSinglePost(slug: string) {
