@@ -12,10 +12,12 @@ export default function Blog({ posts }: Props) {
       {posts.map((p) => (
         <div key={p.slug}>
           <Link href={`/blog/${p.slug}`}>
-            <h4>{p.title}</h4>
+            <div className="cursor-pointer">
+              <h3>{p.title}</h3>
+              <p>{p.summary}</p>
+              <p></p>
+            </div>
           </Link>
-          <p>{p.summary}</p>
-          <p></p>
         </div>
       ))}
     </>
