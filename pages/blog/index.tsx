@@ -1,8 +1,5 @@
 import { loadAllPostMeta, PostMeta } from '@itmecho/lib/content';
-import { Paper, Text, Title } from '@mantine/core';
-import fs from 'fs';
-import matter from 'gray-matter';
-import path from 'path';
+import Link from 'next/link';
 
 interface Props {
   posts: PostMeta[];
@@ -11,23 +8,26 @@ interface Props {
 export default function Blog({ posts }: Props) {
   return (
     <>
-      <Title>Blog</Title>
+      <h2>Blog</h2>
       {posts.map((p) => (
-        <Paper>
-          <Title>{p.title}</Title>
-          <Text>{p.summary}</Text>
-        </Paper>
+        <div key={p.slug}>
+          <Link href={`/blog/${p.slug}`}>
+            <h4>{p.title}</h4>
+          </Link>
+          <p>{p.summary}</p>
+          <p></p>
+        </div>
       ))}
     </>
   );
 }
 
 export async function getStaticProps() {
-  const postList = loadAllPostMeta();
+  const posts = loadAllPostMeta();
 
   return {
     props: {
-      postList,
+      posts,
     },
   };
 }
