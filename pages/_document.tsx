@@ -18,7 +18,7 @@ export default class _Document extends Document {
             rel="stylesheet"
           />
         </Head>
-        <body className="bg-gradient-to-br from-indigo-500 to-white dark:from-indigo-900 dark:to-gray-800 white text-black duration-150 dark:bg-gray-700 dark:text-white">
+        <body className="bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-900 dark:to-gray-800 text-black duration-150 dark:text-white">
           <Main />
           <NextScript />
         </body>
