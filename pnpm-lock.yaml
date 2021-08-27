@@ -7,9 +7,11 @@ specifiers:
   esbuild: ^0.12.23
   eslint: 7.32.0
   eslint-config-next: 11.1.0
+  fs: ^0.0.1-security
   gray-matter: ^4.0.3
   mdx-bundler: ^6.0.1
   next: 11.1.0
+  path: ^0.12.7
   postcss: ^8.3.6
   prettier: ^2.3.2
   react: 17.0.2
@@ -21,8 +23,10 @@ specifiers:
 dependencies:
   '@heroicons/react': 1.0.4_react@17.0.2
   esbuild: 0.12.23
+  fs: 0.0.1-security
   mdx-bundler: 6.0.1_esbuild@0.12.23
   next: 11.1.0_f31b35bdaa3b7c2fce82404f09d2dac4
+  path: 0.12.7
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
 
@@ -1832,6 +1836,10 @@ packages:
     resolution: {integrity: sha1-FQStJSMVjKpA20onh8sBQRmU6k8=}
     dev: true
 
+  /fs/0.0.1-security:
+    resolution: {integrity: sha1-invTcYa23d84E/I4WLV+yq9eQdQ=}
+    dev: false
+
   /fsevents/2.3.2:
     resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
@@ -3380,6 +3388,13 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /path/0.12.7:
+    resolution: {integrity: sha1-1NwqUGxM4hl+tIHr/NWzbAFAsQ8=}
+    dependencies:
+      process: 0.11.10
+      util: 0.10.4
+    dev: false
+
   /pbkdf2/3.1.2:
     resolution: {integrity: sha512-iuh7L6jA7JEGu2WxDwtQP1ddOpaJNC4KlDEFfdQajSGgGPNi4OyDc2R7QnbY2bR9QjBVGwgvTdNJZoE7RaxUMA==}
     engines: {node: '>=0.12'}
@@ -4520,6 +4535,12 @@ packages:
     resolution: {integrity: sha1-evsa/lCAUkZInj23/g7TeTNqwPk=}
     dependencies:
       inherits: 2.0.1
+    dev: false
+
+  /util/0.10.4:
+    resolution: {integrity: sha512-0Pm9hTQ3se5ll1XihRic3FDIku70C+iHUdT/W926rSgHV5QgXsYbKZN8MSC3tJtSkhuROzvsQjAaFENRXr+19A==}
+    dependencies:
+      inherits: 2.0.3
     dev: false
 
   /util/0.11.1:

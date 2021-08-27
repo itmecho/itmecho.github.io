@@ -7,7 +7,7 @@ interface Props {
 
 export default function Layout({ children }: Props) {
   return (
-    <div className="container mx-auto md:px-64 min-h-screen flex flex-col items-strech">
+    <div className="container mx-auto md:px-16 lg:px-32 xl:px-64 min-h-screen flex flex-col items-strech">
       <Header />
       <main className="p-8 flex-grow">{children}</main>
     </div>
