@@ -87,7 +87,7 @@ export default function Header() {
         </nav>
       </header>
       {menuOpen && (
-        <div className="fixed md:hidden h-screen w-screen flex items-center justify-center bg-indigo-200 dark:bg-indigo-800">
+        <div className="z-50 fixed md:hidden h-screen w-screen flex items-center justify-center bg-indigo-200 dark:bg-indigo-800">
           <div className="fixed top-0 right-0 mt-4 mr-4">
             <Button className="mb-2" onClick={() => setMenuOpen(false)}>
               <XIcon className="w-8 h-8" />

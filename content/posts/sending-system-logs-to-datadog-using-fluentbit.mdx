@@ -139,7 +139,7 @@ Now all that's left to do is restart the `td-agent-bit` service and we should st
 
 If we look at our logs in Datadog, we can see that the host and service fields are blank. However, the logs do contain this information.
 
-![Datadog Log](/assets/img/2020-06-17-datadog-log-1.png)
+![Datadog logs 1](/images/sending-system-logs-to-datadog-using-fluentbit/datadog-log-1.png)
 
 Instead of configuring Datadog to use these fields, we can remap them using `fluentbit`. Adding the following `FILTER` section will rename the `_HOSTNAME` field to `host` and the `SYSLOG_IDENTIFIER` field to `service`. Make sure to add this section **between** the `INPUT` and `OUTPUT` sections.
 
@@ -153,4 +153,4 @@ Instead of configuring Datadog to use these fields, we can remap them using `flu
 
 Restart the service and check Datadog again. You should now see that the `host` and `service` fields are set correctly.
 
-![Datadog Log](/assets/img/2020-06-17-datadog-log-2.png)
+![Datadog Log](/images/sending-system-logs-to-datadog-using-fluentbit/datadog-log-2.png)
