@@ -1,6 +1,7 @@
 import { listPostFiles, loadSinglePost, Post } from '@itmecho/lib/content';
 import { getMDXComponent } from 'mdx-bundler/client';
 import { GetStaticPropsContext } from 'next';
+import Image from 'next/image';
 import React from 'react';
 
 interface Props {
@@ -12,7 +13,7 @@ export default function BlogPost({ post }: Props) {
 
   return (
     <>
-      <img src={post.featureImage} alt="Feature image" />
+      <Image src={post.featureImage} alt="Feature image" width={960} height={540} />
       <h1 className="text-4xl font-bold mb-8">{post.title}</h1>
       <Component />
     </>
