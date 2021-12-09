@@ -14,7 +14,7 @@
     "esbuild": "^0.12.23",
     "fs": "^0.0.1-security",
     "mdx-bundler": "^6.0.1",
-    "next": "11.1.0",
+    "next": "11.1.3",
     "path": "^0.12.7",
     "react": "17.0.2",
     "react-dom": "17.0.2"
