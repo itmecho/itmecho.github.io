@@ -1,0 +1,15 @@
+---
+import Layout from './Layout.astro';
+
+const { content } = Astro.props;
+const { title, postDate, description } = content;
+---
+
+<Layout title={title}>
+	<h2 class="text-5xl leading-normal">{title}</h2>
+	<hr class="my-4 border-violet-700"/>
+	<div class="mb-12">
+		<span>{new Date(postDate).toDateString()}</span>
+	</div>
+  <slot></slot>
+</Layout>

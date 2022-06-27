@@ -1,0 +1,14 @@
+---
+import cx from '../lib/cx.ts';
+
+export interface Props {
+  href: string;
+	classes?: string[];
+}
+
+const { classes = [], href } = Astro.props;
+---
+
+<a href={href} class={cx("hover:text-violet-500 duration-150", ...classes)}>
+  <slot></slot>
+</a>
