@@ -1,11 +1,14 @@
 ---
+setup: |
+  import Link from '@components/Link.astro';
 layout: '@layouts/BlogPostLayout.astro'
 title: Adding hooks to your lua neovim plugin using user events
 postDate: 2022-06-28
 description: Short post about how to add hooks to your lua neovim lua by firing user events at key points.
+includeTOC: true
 ---
 
-I recently got [this github issue](https://github.com/itmecho/neoterm.nvim/issues/2) on my [neovim terminal plugin](https://github.com/) repo asking if I could add some specific behaviour at the point the user exist terminal mode. I could've just added a configuration option but I think that's a good way to end up with functions that take way too many parameters. Instead, I opted to add a hook so that the user could implement whatever logic they wanted on that specific event.
+I recently got <Link external href="https://github.com/itmecho/neoterm.nvim/issues/4">this github issue</Link> on my <Link external href="https://github.com/itmecho/neoterm.nvim">neovim terminal plugin</Link> repo asking if I could add some specific behaviour at the point the user exist terminal mode. I could've just added a configuration option but I think that's a good way to end up with functions that take way too many parameters. Instead, I opted to add a hook so that the user could implement whatever logic they wanted on that specific event.
 
 ## What is neoterm.nvim
 
@@ -19,7 +22,7 @@ It also has a few different display modes: horizontal, vertical, or fullscreen. 
 </figure>
 
 <figure>
-	![Screenshot of neoterm showing the NeotermRun command.](/img/blog/neoterm-screenshot.png)
+	![Screenshot of neoterm showing the NeotermRun command.](/img/blog/neoterm-run-screenshot.png)
 	<figcaption>Screenshot of neoterm showing the NeotermRun command.</figcaption>
 </figure>
 
@@ -51,4 +54,5 @@ vim.api.nvim_create_autocmd("User", {
 })
 ```
 
+## Closing thoughts
 In summary, I think that adding User events is a more flexible approach to allowing specific behaviour to your plugin without having to implement and maintain additional logic and configuration options. It allows users much more control over the behaviour which lets them more effectively build the workflow they want!

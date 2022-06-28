@@ -1,15 +1,83 @@
 ---
 import Layout from './Layout.astro';
+import Link from '@components/Link.astro';
 
 const { content } = Astro.props;
-const { title, postDate, description } = content;
+const {
+  title,
+  postDate,
+  description,
+  includeTOC = false,
+  astro: { headers },
+} = content;
+const indentMap = {
+  2: 'ml-8',
+  3: 'ml-12',
+  4: 'ml-16',
+  5: 'ml-20',
+  6: 'ml-24',
+};
 ---
 
 <Layout title={title}>
-	<h2 class="text-5xl leading-normal">{title}</h2>
-	<hr class="my-4 border-violet-700"/>
-	<div class="mb-12">
-		<span>{new Date(postDate).toDateString()}</span>
-	</div>
-  <slot></slot>
+  <h1 class='text-5xl leading-normal'>{title}</h1>
+  <hr class='my-4 border-2 border-violet-700' />
+  <div class='mb-12'>
+    <span>{new Date(postDate).toDateString()}</span>
+  </div>
+  <article>
+    {includeTOC && headers.length > 0 && (
+      <nav class="mb-16">
+        <h2>Contents</h2>
+        <ul>
+          {headers.map((h) => (
+            <li class={indentMap[h.depth]}>
+              <Link href={`#${h.slug}`}>{h.text}</Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+    <slot></slot>
+  </article>
 </Layout>
+
+<style>
+  article {
+    @apply text-lg leading-loose;
+  }
+
+  article :global(h2) {
+    @apply mt-16 mb-8 text-4xl;
+  }
+  article :global(h2):before {
+    content: '> ';
+  }
+
+  /* Links */
+  article :global(a) {
+    @apply text-emerald-500 hover:text-emerald-300 duration-150;
+  }
+
+  article :global(p) {
+    @apply mb-4;
+  }
+
+  article :global(p > code) {
+    @apply mx-1 py-1 px-3 bg-slate-700 text-base rounded-md;
+  }
+
+  article :global(pre) {
+    @apply m-8 p-4 text-base rounded-md;
+  }
+
+  article :global(figure) {
+    @apply m-8 text-base border-2 border-slate-700;
+  }
+  article :global(figure figcaption) {
+    @apply bg-slate-700 pl-4 py-1 text-sm;
+  }
+  article :global(figure p) {
+    @apply m-0;
+  }
+</style>
