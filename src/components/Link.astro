@@ -1,0 +1,19 @@
+---
+import cx from '@lib/cx.ts';
+
+export interface Props {
+  href: string;
+  classes?: string[];
+  external?: bool;
+}
+
+const { classes = [], href, external = false } = Astro.props;
+---
+
+<a
+  href={href}
+  class={cx('text-emerald-500 hover:text-emerald-300 duration-150', ...classes)}
+  target={external ? '_blank' : '_self'}
+>
+  <slot></slot>
+</a>

@@ -1,0 +1,105 @@
+---
+import readingTime from 'reading-time';
+import Layout from './Layout.astro';
+import Link from '@components/Link.astro';
+
+const { content } = Astro.props;
+const {
+  title,
+  date,
+  description,
+  disableTOC = false,
+  astro: { headers, source: mdContent },
+} = content;
+
+const indentMap = {
+  2: 'ml-8',
+  3: 'ml-12',
+  4: 'ml-16',
+  5: 'ml-20',
+  6: 'ml-24',
+};
+
+const readTime = readingTime(mdContent);
+---
+
+<Layout title={title}>
+  <h1 class='mt-16 text-5xl leading-normal'>{title}</h1>
+  <hr class='mt-4 mb-2 border-2 border-violet-700' />
+  <div class='mb-12 flex justify-between'>
+    <span>{new Date(date).toDateString()}</span>
+    <span>{readTime.text}</span>
+  </div>
+  <article class='text-xl leading-loose'>
+    {!disableTOC && headers.length > 0 && (
+      <nav class="mb-16">
+        <h2>Contents</h2>
+        <ul>
+          {headers.map((h) => (
+            <li class={indentMap[h.depth]}>
+              <Link href={`#${h.slug}`}>{h.text}</Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+    <slot></slot>
+  </article>
+</Layout>
+
+<style>
+  article :global(h2:before),
+  article :global(h3:before),
+  article :global(h4:before),
+  article :global(h5:before),
+  article :global(h6:before) {
+    content: '> ';
+  }
+
+  /* Headings */
+  article :global(h2) {
+    @apply mt-16 mb-8 text-4xl;
+  }
+  article :global(h3) {
+    @apply mt-16 mb-8 text-3xl;
+  }
+  article :global(h4) {
+    @apply mt-16 mb-8 text-2xl;
+  }
+  article :global(h5) {
+    @apply mt-16 mb-8 text-xl;
+  }
+  article :global(h6) {
+    @apply mt-16 mb-8 font-bold text-xl;
+  }
+
+  article :global(p) {
+    @apply mb-4;
+  }
+
+  article :global(ul) {
+    @apply ml-12 mb-8 list-disc;
+  }
+
+  article :global(:not(pre) code) {
+    @apply mx-1 py-1 px-3 bg-slate-700 rounded-md;
+  }
+
+  article :global(p > code) {
+    @apply text-base;
+  }
+
+  article :global(pre) {
+    @apply my-8 md:m-8 p-4 text-base rounded-md;
+  }
+
+  article :global(figure) {
+    @apply my-8 md:m-8 text-base border-2 border-slate-700;
+  }
+  article :global(figure figcaption) {
+    @apply bg-slate-700 px-2 py-1 text-base;
+  }
+  article :global(figure p) {
+    @apply m-0;
+  }
+</style>

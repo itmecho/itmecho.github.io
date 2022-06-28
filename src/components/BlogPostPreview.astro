@@ -1,0 +1,27 @@
+---
+import readingTime from 'reading-time';
+import { Post } from '@lib/blog.ts';
+
+export interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const postDate = new Date(post.frontmatter.date).toDateString();
+const readTime = readingTime(post.rawContent());
+---
+
+<a
+  href={post.url}
+  class='block border-l-violet-700 border-l-4 p-8 hover:translate-x-1 hover:bg-slate-900 duration-150'
+>
+  <article>
+    <h3 class='text-lg font-semibold'>{post.frontmatter.title}</h3>
+    <p class='mb-4 text-sm'>
+      {postDate}
+      <span class='mx-2'>|</span>
+      {readTime.text}
+    </p>
+    <p>{post.frontmatter.description}</p>
+  </article>
+</a>
