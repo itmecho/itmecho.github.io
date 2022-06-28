@@ -48,15 +48,33 @@ const readTime = readingTime(mdContent);
 </Layout>
 
 <style>
+  article :global(h2:before, h3:before, h4:before, h5:before, h6:before) {
+    content: '> ';
+  }
+
+  /* Headings */
   article :global(h2) {
     @apply mt-16 mb-8 text-4xl;
   }
-  article :global(h2):before {
-    content: '> ';
+  article :global(h3) {
+    @apply mt-16 mb-8 text-3xl;
+  }
+  article :global(h4) {
+    @apply mt-16 mb-8 text-2xl;
+  }
+  article :global(h5) {
+    @apply mt-16 mb-8 text-xl;
+  }
+  article :global(h6) {
+    @apply mt-16 mb-8 font-bold text-xl;
   }
 
   article :global(p) {
     @apply mb-4;
+  }
+
+  article :global(ul) {
+    @apply ml-12 mb-8 list-disc;
   }
 
   article :global(:not(pre) code) {

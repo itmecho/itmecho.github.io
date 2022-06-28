@@ -4,11 +4,20 @@ import { Post } from '@lib/blog.ts';
 import BlogPostPreview from '@components/BlogPostPreview.astro';
 
 const allPosts = await Astro.glob('./*.md');
-const posts: Post[] = allPosts.sort((a, b) => new Date(b.frontmatter.publishDate).valueOf() - new Date(a.frontmatter.publishDate).valueOf());
+const posts: Post[] = allPosts.sort(
+  (a, b) =>
+    new Date(b.frontmatter.publishDate).valueOf() -
+    new Date(a.frontmatter.publishDate).valueOf()
+);
 ---
 
-<Layout title="Blog">
-	<ul>
-		{posts.map(post => <li><BlogPostPreview post={post} /></li>)}
-	<ul>
+<Layout title='Blog'>
+  <ul class='flex flex-col gap-8'>
+    {posts.map((post) => (
+      <li>
+        <BlogPostPreview post={post} />
+      </li>
+    ))}
+    <ul></ul>
+  </ul>
 </Layout>

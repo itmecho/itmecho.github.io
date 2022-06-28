@@ -3,8 +3,8 @@ setup: |
   import Link from '@components/Link.astro';
 layout: '@layouts/BlogPostLayout.astro'
 title: Adding hooks to your neovim lua plugin using user events
-postDate: 2022-06-28
 description: Short post about how to add hooks to your lua neovim lua by firing user events at key points.
+postDate: 2022-06-28
 includeTOC: true
 ---
 
