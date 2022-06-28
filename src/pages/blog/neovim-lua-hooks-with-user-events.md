@@ -17,11 +17,6 @@ I recently had a <Link external href="https://github.com/itmecho/neoterm.nvim/is
 It also has a few different display modes: horizontal, vertical, or fullscreen. This changes the size and position of the floating terminal window to hopefully fit different use cases. `neoterm.nvim` also exposes a few commands to enable you to script sending commands to the terminal, `NeotermRun` and `NeotermRerun`. You could create a mapping for the `NeotermRerun` command as `nnoremap <leader>tr <cmd>NeotermRerun<cr>` which would allow you to run your test command once (example: `NeotermRun go test .`) and then use the rerun mapping to run them again.
 
 <figure>
-	![Screenshot of neoterm showing the vertical layout.](/img/blog/neoterm-screenshot.png)
-	<figcaption>Screenshot of neoterm showing the vertical layout.</figcaption>
-</figure>
-
-<figure>
 	![Screenshot of neoterm showing the NeotermRun command.](/img/blog/neoterm-run-screenshot.png)
 	<figcaption>Screenshot of neoterm showing the NeotermRun command.</figcaption>
 </figure>
