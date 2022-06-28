@@ -6,7 +6,7 @@ import Link from '@components/Link.astro';
 const { content } = Astro.props;
 const {
   title,
-  postDate,
+  date,
   description,
   includeTOC = false,
   astro: { headers, source: mdContent },
@@ -27,7 +27,7 @@ const readTime = readingTime(mdContent);
   <h1 class='mt-16 text-5xl leading-normal'>{title}</h1>
   <hr class='mt-4 mb-2 border-2 border-violet-700' />
   <div class='mb-12 flex justify-between'>
-    <span>{new Date(postDate).toDateString()}</span>
+    <span>{new Date(date).toDateString()}</span>
     <span>{readTime.text}</span>
   </div>
   <article class='text-xl leading-loose'>

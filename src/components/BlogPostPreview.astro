@@ -7,7 +7,7 @@ export interface Props {
 }
 
 const { post } = Astro.props;
-const postDate = new Date(post.frontmatter.postDate).toDateString();
+const postDate = new Date(post.frontmatter.date).toDateString();
 const readTime = readingTime(post.rawContent());
 ---
 

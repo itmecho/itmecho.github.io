@@ -5,7 +5,7 @@ setup: |
 layout: '@layouts/BlogPostLayout.astro'
 title: Sending system logs to Datadog using fluentbit
 description: Installing and configuring fluentbit to forward your system logs to DataDog (or another destination!)
-postDate: 2020-06-17
+date: 2020-06-17
 includeTOC: true
 ---
 
