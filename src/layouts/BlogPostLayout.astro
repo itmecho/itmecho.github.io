@@ -48,7 +48,11 @@ const readTime = readingTime(mdContent);
 </Layout>
 
 <style>
-  article :global(h2:before, h3:before, h4:before, h5:before, h6:before) {
+  article :global(h2:before),
+  article :global(h3:before),
+  article :global(h4:before),
+  article :global(h5:before),
+  article :global(h6:before) {
     content: '> ';
   }
 
