@@ -1,4 +1,5 @@
 ---
+import readingTime from 'reading-time';
 import Layout from './Layout.astro';
 import Link from '@components/Link.astro';
 
@@ -8,8 +9,9 @@ const {
   postDate,
   description,
   includeTOC = false,
-  astro: { headers },
+  astro: { headers, source: mdContent },
 } = content;
+
 const indentMap = {
   2: 'ml-8',
   3: 'ml-12',
@@ -17,13 +19,16 @@ const indentMap = {
   5: 'ml-20',
   6: 'ml-24',
 };
+
+const readTime = readingTime(mdContent);
 ---
 
 <Layout title={title}>
   <h1 class='mt-16 text-5xl leading-normal'>{title}</h1>
-  <hr class='my-4 border-2 border-violet-700' />
-  <div class='mb-12'>
+  <hr class='mt-4 mb-2 border-2 border-violet-700' />
+  <div class='mb-12 flex justify-between'>
     <span>{new Date(postDate).toDateString()}</span>
+    <span>{readTime.text}</span>
   </div>
   <article class='text-xl leading-loose'>
     {includeTOC && headers.length > 0 && (
