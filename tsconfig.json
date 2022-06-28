@@ -11,8 +11,11 @@
     "isolatedModules": true,
     // Add type definitions for our Vite runtime.
     "types": ["vite/client"],
-	"paths": {
-		"@components/*": ["./src/components/"]
-	}
+		"baseUrl": ".",
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@lib/*": ["src/lib/*"]
+    }
   }
 }
