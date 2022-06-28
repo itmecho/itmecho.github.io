@@ -20,12 +20,12 @@ const indentMap = {
 ---
 
 <Layout title={title}>
-  <h1 class='text-5xl leading-normal'>{title}</h1>
+  <h1 class='mt-16 text-5xl leading-normal'>{title}</h1>
   <hr class='my-4 border-2 border-violet-700' />
   <div class='mb-12'>
     <span>{new Date(postDate).toDateString()}</span>
   </div>
-  <article>
+  <article class='text-xl leading-loose'>
     {includeTOC && headers.length > 0 && (
       <nav class="mb-16">
         <h2>Contents</h2>
@@ -43,10 +43,6 @@ const indentMap = {
 </Layout>
 
 <style>
-  article {
-    @apply text-lg leading-loose;
-  }
-
   article :global(h2) {
     @apply mt-16 mb-8 text-4xl;
   }
@@ -54,28 +50,27 @@ const indentMap = {
     content: '> ';
   }
 
-  /* Links */
-  article :global(a) {
-    @apply text-emerald-500 hover:text-emerald-300 duration-150;
-  }
-
   article :global(p) {
     @apply mb-4;
   }
 
+  article :global(:not(pre) code) {
+    @apply mx-1 py-1 px-3 bg-slate-700 rounded-md;
+  }
+
   article :global(p > code) {
-    @apply mx-1 py-1 px-3 bg-slate-700 text-base rounded-md;
+    @apply text-base;
   }
 
   article :global(pre) {
-    @apply m-8 p-4 text-base rounded-md;
+    @apply my-8 md:m-8 p-4 text-base rounded-md;
   }
 
   article :global(figure) {
-    @apply m-8 text-base border-2 border-slate-700;
+    @apply my-8 md:m-8 text-base border-2 border-slate-700;
   }
   article :global(figure figcaption) {
-    @apply bg-slate-700 pl-4 py-1 text-sm;
+    @apply bg-slate-700 px-2 py-1 text-base;
   }
   article :global(figure p) {
     @apply m-0;
