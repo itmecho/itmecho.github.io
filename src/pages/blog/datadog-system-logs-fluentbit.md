@@ -6,7 +6,6 @@ layout: '@layouts/BlogPostLayout.astro'
 title: Sending system logs to Datadog using fluentbit
 description: Installing and configuring fluentbit to forward your system logs to DataDog (or another destination!)
 date: 2020-06-17
-includeTOC: true
 ---
 
 In this post, we'll be using a tool called <Link external href="https://fluentbit.io/">`fluentbit`</Link> to send logs to a log aggregation platform, in this case Datadog. `fluentbit` allows us to process and enrich our logs before sending them to add additional context. This is extremely useful when trying to hunt down the cause of an issue.

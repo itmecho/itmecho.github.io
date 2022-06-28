@@ -8,7 +8,7 @@ const {
   title,
   date,
   description,
-  includeTOC = false,
+  disableTOC = false,
   astro: { headers, source: mdContent },
 } = content;
 
@@ -31,7 +31,7 @@ const readTime = readingTime(mdContent);
     <span>{readTime.text}</span>
   </div>
   <article class='text-xl leading-loose'>
-    {includeTOC && headers.length > 0 && (
+    {!disableTOC && headers.length > 0 && (
       <nav class="mb-16">
         <h2>Contents</h2>
         <ul>
