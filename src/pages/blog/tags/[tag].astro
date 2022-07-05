@@ -1,6 +1,6 @@
 ---
 import Layout from '@layouts/Layout.astro';
-import BlogPostPreview from '@components/BlogPostPreview.astro';
+import BlogPostList from '@components/BlogPostList.astro';
 import Tag from '@components/Tag.astro';
 
 export async function getStaticPaths() {
@@ -27,5 +27,5 @@ const posts = allPosts.filter((p) => p.frontmatter.tags?.includes(tag));
     <Tag classes='mx-2' disableHover tag={tag} />
     <span> tag</span>
   </h1>
-  {posts.map((p) => <BlogPostPreview post={p} />)}
+  <BlogPostList posts={posts} />
 </Layout>

@@ -1,0 +1,18 @@
+---
+import BlogPostPreview from '@components/BlogPostPreview.astro';
+import { Post } from '@lib/blog.ts';
+
+export interface Props {
+  posts: Post[];
+}
+
+const { posts } = Astro.props;
+---
+
+<ul class='flex flex-col gap-8'>
+  {posts.map((p) => (
+    <li>
+      <BlogPostPreview post={p} />
+    </li>
+  ))}
+</ul>

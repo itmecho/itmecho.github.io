@@ -1,7 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import { Post } from '@lib/blog.ts';
-import BlogPostPreview from '@components/BlogPostPreview.astro';
+import BlogPostList from '@components/BlogPostList.astro';
 
 const allPosts = await Astro.glob('./*.md');
 const posts: Post[] = allPosts
@@ -14,12 +14,5 @@ const posts: Post[] = allPosts
 ---
 
 <Layout title='Blog'>
-  <ul class='flex flex-col gap-8'>
-    {posts.map((post) => (
-      <li>
-        <BlogPostPreview post={post} />
-      </li>
-    ))}
-    <ul></ul>
-  </ul>
+  <BlogPostList posts={posts} />
 </Layout>
