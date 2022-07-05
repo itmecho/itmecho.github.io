@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
+    "dev:host": "npm run dev -- --host 0.0.0.0",
+    "start": "astro dev --host",
     "build": "astro build",
     "preview": "astro preview"
   },
