@@ -3,6 +3,7 @@ layout: '@layouts/BlogPostLayout.astro'
 title: Set defaults for environment variables
 description: Showing the shell syntax for setting a default vaule for environment variables
 date: 2020-06-16
+tags: ['linux']
 ---
 
 If you're writing a script, sometimes it can be helpful to set a default for a variable. If the variable is optional, this can often remove the need to check if a variable is set before using it and also help keep your output nicely formatted and easy to read. The following script will have different outputs based upon the environment variables we set:

@@ -1,0 +1,26 @@
+---
+import cx from '@lib/cx.ts';
+
+export interface Props {
+  classes?: string;
+  disableHover?: boolean;
+  size?: Size;
+  tag: string;
+}
+
+type Size = 'small' | 'medium';
+
+const { classes, disableHover = false, size = 'medium', tag } = Astro.props;
+---
+
+<p
+  class={cx(
+    'bg-emerald-700 text-slate-50 rounded-full duration-150',
+    classes,
+    size === 'small' && 'text-sm px-3 pb-1',
+    size === 'medium' && 'text-base px-4 py-1',
+    !disableHover && 'hover:bg-emerald-600'
+  )}
+>
+  {tag}
+</p>

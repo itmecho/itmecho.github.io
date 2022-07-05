@@ -6,6 +6,7 @@ layout: '@layouts/BlogPostLayout.astro'
 title: Setting up pipewire in Void Linux using xinit
 description: Quick guide on setting up pipewire and it's pulseaudio service using xinit
 date: 2022-07-04
+tags: ['linux', 'voidlinux']
 ---
 
 <Link external href="https://pipewire.org/">Pipewire</Link> is a modern approach to multimedia handling in Linux. It aims to improve the experience of working with media within Linux and can be a drop-in replacement for both <Link external href="https://www.freedesktop.org/wiki/Software/PulseAudio/">PulseAudio</Link> and <Link external href="https://jackaudio.org/">JACK</Link>. In this post, we'll be setting up the pipewire pulseaudio service to handle audio inputs and outputs.

@@ -5,6 +5,7 @@ layout: '@layouts/BlogPostLayout.astro'
 title: Systemd unit failure notification
 description: Using systemd to send a slack notification when another systemd unit fails
 date: 2020-06-15
+tags: ['linux']
 ---
 
 In this post, we will be configuring a systemd unit which will send a notification to a slack channel when a systemd unit enters the failed state. This is achieved using the <Link external href="https://www.freedesktop.org/software/systemd/man/systemd.unit.html#OnFailure=">`OnFailure`</Link> setting in the `Unit` section.

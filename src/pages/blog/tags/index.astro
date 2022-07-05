@@ -1,0 +1,21 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Link from '@components/Link.astro';
+import Tag from '@components/Tag.astro';
+
+const posts = await Astro.glob('../*.md');
+const tags = posts
+  .filter((p) => !!p.frontmatter.tags)
+  .reduce((acc, tags) => acc.concat(tags.frontmatter.tags), [])
+  .sort();
+---
+
+<Layout title='Blog tags'>
+  <div class='flex gap-4'>
+    {tags.map((tag) => (
+      <Link href={`/blog/tags/${tag}`}>
+        <Tag tag={tag} />
+      </Link>
+    ))}
+  </div>
+</Layout>

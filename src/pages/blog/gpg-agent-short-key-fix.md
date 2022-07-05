@@ -5,6 +5,7 @@ layout: '@layouts/BlogPostLayout.astro'
 title: Fixing gpg-agent-ssh after adding short key
 description: How I fixed my SSH agent after adding a key that was too short
 date: 2020-07-24
+tags: ['linux']
 ---
 
 First off, I'll give a brief overview of my SSH setup. I use `gpg-agent`'s SSH functionality as an SSH agent which gives me the benefit of automatically caching the key password after prompting for it once. This persists across all my terminals and programs which is great as when I'm running an ansible playbook that pulls in a lot of private role dependencies, I don't have to constantly put my password in. I used <Link external href="https://wiki.archlinux.org/index.php/GnuPG#SSH_agent">this guide</Link> to set up SSH to use the `gpg-agent`.
