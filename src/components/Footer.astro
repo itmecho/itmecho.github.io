@@ -1,0 +1,35 @@
+---
+import Link from '@components/Link.astro';
+import Github from '../icons/Github.astro';
+import Twitter from '../icons/Twitter.astro';
+import cx from '@lib/cx.ts';
+
+export interface Props {
+  subtle?: boolean;
+}
+
+const { subtle = false } = Astro.props;
+---
+
+<footer
+  class={cx(
+    //'mt-16 px-12 py-8 flex flex-col md:flex-row items-center justify-between gap-2 text-slate-400',
+    'grid grid-cols-1 md:grid-cols-3 gap-4 text-center mt-16 px-12 py-8 text-slate-400',
+    subtle ? '' : 'bg-slate-900'
+  )}
+>
+  <p class='md:text-left order-2 md:order-1'>
+    Built with <Link href='https://astro.build'>Astro</Link>
+  </p>
+  <div
+    class='flex items-center justify-center gap-8 fill-slate-400 order-1 md:order-2'
+  >
+    <Link external href='https://github.com/itmecho'>
+      <Github />
+    </Link>
+    <!--<Link external href='https://twitter.com/_itmecho'>
+      <Twitter />
+    </Link>-->
+  </div>
+  <p class='md:text-right order-3'>All rights reserved &copy; Iain Earl 2022</p>
+</footer>
