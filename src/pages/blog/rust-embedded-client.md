@@ -1,0 +1,228 @@
+---
+setup: |
+  import Link from '@components/Link.astro';
+layout: '@layouts/BlogPostLayout.astro'
+title: Embedding a frontend client in a rust HTTP server
+description: Guide on how to create a single binary for your rust web project
+date: 2022-11-09
+tags: ['rust', 'software-engineering']
+---
+
+This post will take a look at the process of embedding a frontend application in your rust web server. I'll be using the <Link external href="https://crates.io/crates/actix-web">`actix-web` rust crate</Link> for the web server and a <Link external href="https://svelte.dev/">Svelte</Link> application for the embedded frontend but the process should be pretty similar for other crates/JS frameworks.
+
+## Setting up the rust server
+
+The first thing we need to do is create a new rust project. I'll assume you already have rust installed but if not then <Link external href="https://rustup.rs/">check out rustup</Link>.
+
+To create the new project, we will use the `cargo new` command.
+
+```sh
+cargo new --bin myproject
+```
+
+Now we can setup a basic actix web server with a hello world endpoint. `cd` into the project and open up `src/main.rs`. Now we want to convert the main function to run on the actix runtime. We do that by making `main` asynchronous and adding the `actix_web::main` proc macro to it.
+
+```rs
+#[actix_web::main]
+async fn main() {
+    println!("Hello, world!");
+}
+```
+
+Next we will setup a basic server to respond to `/hello` with the string "Hello World".
+
+```rs
+use actix_web::{web, App, HttpServer};
+
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| {
+        App::new()
+            .route("/hello", web::get().to(|| async { "Hello World" }))
+    })
+    .bind(("127.0.0.1", 8080))?
+    .run()
+    .await
+}
+```
+
+Here we have defined a new `HttpServer` listening on `localhost:8080` that responds to a `GET /hello` request. To test that everything so far is working, run the server and then in another terminal curl the `/hello` endpoint.
+
+```sh
+cargo run
+
+# In another terminal
+curl localhost:8080/hello
+Hello World
+```
+
+We now have a working server! Time to get the frontend client ready to embed.
+
+## Setting up the frontend client
+
+Now we are ready to setup the Svelte frontend application. In the root of `myproject`, run the following npm command to create a new Svelte app.
+
+```sh
+npm create vite@latest client -- --template svelte
+```
+
+This will create a new Svelte project in the `client` directory. The last step is to install the dependencies and build the client.
+
+```sh
+cd client
+npm install
+npm run build
+```
+
+The client will be built and output to the dist directory. The client is now ready to be embedded into our server.
+
+If you want to preview the client locally, you can run the `npm run preview` command and go to the URL it outputs to see the built client.
+
+## Embedding the client
+
+To embed a directory into our rust server, we will use the <Link external href="https://crates.io/crates/rust-embed">`rust-embed` crate</Link>. Lets pull it into our `Cargo.toml`.
+
+```sh
+cargo add rust-embed@6
+```
+
+Now we want to tell rust to embed the `client/dist` directory into a struct. This allows us to access the contents of any file in the directory as a `Cow<'static, [u8]>` which we can write directly to the body of an HTTP response! We can embed the client dist directory by deriving the `RustEmbed` custom derive macro on a struct and providing the path to the directory we want to embed via an attribute macro. Add the following before your `main` function in `main.rs`.
+
+```rs
+use rust_embed::RustEmbed;
+
+// ...
+
+#[derive(RustEmbed)]
+#[folder = "client/dist"]
+struct ClientAssets;
+```
+
+Next up we need to define the handler that will serve the embedded files. We'll do this as a separate function and use the `get` proc macro provided by actix. To make sure the `Content-Type` header is set correctly on the response, we'll import another useful crate called <Link external href="https://docs.rs/mime_guess/latest/mime_guess/">`mime_guess`</Link>. This crate has a function that takes a path and returns a MIME type based on the file extension. Just as before, we can add it using `cargo add`.
+
+```sh
+cargo add mime_guess@2
+```
+
+Now we're ready to create the handler.
+
+```rs
+fn serve_client_file(path: &str) -> HttpResponse {
+    match ClientAssets::get(path) {
+        Some(file_content) => HttpResponse::Ok()
+            .content_type(mime_guess::from_path(path).first_or_octet_stream().as_ref())
+            .body(file_content.data.into_owned()),
+        None => HttpResponse::NotFound().body("404 Not Found"),
+    }
+}
+```
+
+This function takes a path as a string and attempts to load the file at that path from our embedded files. If the file exists it is returned as the body of the response, otherwise a 404 Not found error will be returned.
+
+The last part we need to do is hook up some actix routes to respond with the files! We'll define a new route at `/` that trys to respond with any path following the `/`.
+
+```rs
+async fn client(path: web::Path<String>) -> impl Responder {
+    serve_client_file(path.as_str())
+}
+```
+
+Then in our `main` function we'll define the route on the server. As it's a wildcard route and routes are matched in the order they're defined, we need to make sure we define it last.
+
+```rs
+    HttpServer::new(|| {
+        App::new()
+            .route("/hello", web::get().to(|| async { "Hello World" }))
+            .route("/{name:.*}", web::get().to(client))
+    })
+```
+
+Great! Running our server now gets us access to our client at `http://localhost:8080/index.html`! This is great, but it would be nice to have the index.html served on the root, i.e. `http://localhost:8080/`. As we already have a helper function to serve a file based on a path string, we can just define a new route to handle the base path.
+
+```rs
+    HttpServer::new(|| {
+        App::new()
+            .route("/hello", web::get().to(|| async { "Hello World" }))
+            .route("/", web::get().to(|| async { serve_client_file("index.html") }))
+            .route("/{name:.*}", web::get().to(client))
+    })
+```
+
+Easy! Now when you go to `http://localhost:8000` you should see the default Svelte app! We've successfully configured our actix server with an embedded frontend!
+
+All together this is how our `main.rs` is looking
+
+```rs
+use actix_web::{web, App, HttpResponse, HttpServer, Responder};
+use rust_embed::RustEmbed;
+
+#[derive(RustEmbed)]
+#[folder = "client/dist"]
+struct ClientAssets;
+
+fn serve_client_file(path: &str) -> HttpResponse {
+    match ClientAssets::get(path) {
+        Some(file_content) => HttpResponse::Ok()
+            .content_type(mime_guess::from_path(path).first_or_octet_stream().as_ref())
+            .body(file_content.data.into_owned()),
+        None => HttpResponse::NotFound().body("404 Not Found"),
+    }
+}
+
+async fn client(path: web::Path<String>) -> impl Responder {
+    serve_client_file(path.as_str())
+}
+
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| {
+        App::new()
+            .route("/hello", web::get().to(|| async { "Hello World" }))
+            .route(
+                "/",
+                web::get().to(|| async { serve_client_file("index.html") }),
+            )
+            .route("/{name:.*}", web::get().to(client))
+    })
+    .bind(("127.0.0.1", 8080))?
+    .run()
+    .await
+}
+```
+
+## Bonus: Build the client with the server
+
+We've got a pretty good setup going now, but it's a bit annoying that we have to remember to build the client before we build the server to make sure any changes are included in the embedded files.
+
+We can use <Link external href="https://doc.rust-lang.org/cargo/reference/build-scripts.html">Cargo build scripts</Link> to make sure the client gets built before we embed it. This should mean we always embed the lastest client changes into our server binary. To do this, create a `build.rs` in the root of the project and add the following:
+
+```rs
+use std::process::Command;
+
+fn main() {
+    let output = Command::new("npm")
+        .current_dir("client")
+        .arg("run")
+        .arg("build")
+        .output()
+        .expect("failed to build the client");
+    if !output.status.success() {
+        panic!(
+            "failed to build client:\n{}",
+            std::str::from_utf8(&output.stderr).unwrap()
+        );
+    }
+    println!("cargo:rerun-if-changed=client");
+    println!("cargo:rerun-if-changed=build.rs");
+}
+```
+
+This tells cargo to build the client before building our server. The `println!` lines at the end of the function let cargo know that the build script needs to be rerun if the build script or any of the client files have been changed. If the npm build command fails, it will panic and print out the stderr from the npm build command to help with debugging.
+
+## Summary
+
+We've successfully setup a rust web server that embeds a client application and compiles to a single binary. This is a great way to make an easily distributable application that doesn't rely on the filesystem at runtime!
+
+While I've specifically used Actix web and Svelte in this post, the pattern should be easily transferrable to other backend and frontend frameworks.
+
+Having an embedded client makes it easy to call an API endpoint on your rust server by just making a fetch request to an absolute path, i.e. `/api/some/dynamic/data`. You don't need to specify a scheme/host/post as it's served on the same URL!
