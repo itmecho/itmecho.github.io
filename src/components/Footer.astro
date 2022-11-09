@@ -3,6 +3,7 @@ import Link from '@components/Link.astro';
 import Github from '../icons/Github.astro';
 import Twitter from '../icons/Twitter.astro';
 import cx from '@lib/cx.ts';
+import Mastodon from 'src/icons/Mastodon.astro';
 
 export interface Props {
   subtle?: boolean;
@@ -27,9 +28,9 @@ const { subtle = false } = Astro.props;
     <Link external href='https://github.com/itmecho'>
       <Github />
     </Link>
-    <!--<Link external href='https://twitter.com/_itmecho'>
-      <Twitter />
-    </Link>-->
+    <Link external rel="me" href='https://floss.social/@itmecho'>
+      <Mastodon />
+    </Link>
   </div>
   <p class='md:text-right order-3'>All rights reserved &copy; Iain Earl 2022</p>
 </footer>

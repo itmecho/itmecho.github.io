@@ -5,9 +5,10 @@ export interface Props {
   href: string;
   classes?: string[];
   external?: bool;
+	rel?: string;
 }
 
-const { classes = [], href, external = false } = Astro.props;
+const { classes = [], href, external = false, rel = undefined } = Astro.props;
 ---
 
 <a
@@ -17,6 +18,7 @@ const { classes = [], href, external = false } = Astro.props;
     ...classes
   )}
   target={external ? '_blank' : '_self'}
+	rel={rel}
 >
   <slot></slot>
 </a>
