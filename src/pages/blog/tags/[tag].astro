@@ -4,7 +4,7 @@ import BlogPostList from '@components/BlogPostList.astro';
 import Tag from '@components/Tag.astro';
 
 export async function getStaticPaths() {
-  const allPosts = await Astro.glob('../*.md');
+  const allPosts = await Astro.glob('../*.mdx');
   const tags = allPosts
     .filter((p) => !!p.frontmatter.tags)
     .reduce((acc, tags) => acc.concat(tags.frontmatter.tags), []);
@@ -16,7 +16,7 @@ export async function getStaticPaths() {
   }));
 }
 
-const allPosts = await Astro.glob('../*.md');
+const allPosts = await Astro.glob('../*.mdx');
 const { tag } = Astro.params;
 const posts = allPosts.filter((p) => p.frontmatter.tags?.includes(tag));
 ---

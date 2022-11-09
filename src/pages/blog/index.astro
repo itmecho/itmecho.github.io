@@ -3,7 +3,7 @@ import Layout from '@layouts/Layout.astro';
 import { Post } from '@lib/blog.ts';
 import BlogPostList from '@components/BlogPostList.astro';
 
-const allPosts = await Astro.glob('./*.md');
+const allPosts = await Astro.glob('./*.mdx');
 const posts: Post[] = allPosts
   .filter((p) => !p.frontmatter.draft)
   .sort(

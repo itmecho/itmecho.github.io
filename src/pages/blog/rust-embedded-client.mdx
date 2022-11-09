@@ -1,12 +1,12 @@
 ---
-setup: |
-  import Link from '@components/Link.astro';
-layout: '@layouts/BlogPostLayout.astro'
+layout: ../../layouts/BlogPostLayout.astro
 title: Embedding a frontend client in a rust HTTP server
 description: Guide on how to create a single binary for your rust web project
 date: 2022-11-09
 tags: ['rust', 'software-engineering']
 ---
+
+import Link from '@components/Link.astro';
 
 This post will take a look at the process of embedding a frontend application in your rust web server. I'll be using the <Link external href="https://crates.io/crates/actix-web">`actix-web` rust crate</Link> for the web server and a <Link external href="https://svelte.dev/">Svelte</Link> application for the embedded frontend but the process should be pretty similar for other crates/JS frameworks.
 
