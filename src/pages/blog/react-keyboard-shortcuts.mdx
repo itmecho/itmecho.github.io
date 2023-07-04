@@ -1,0 +1,324 @@
+---
+layout: '@layouts/BlogPostLayout.astro'
+title: Add keyboard shortcuts to your React app
+description: Guide for how to add keyboard shortcuts to your React application
+date: 2023-07-05
+tags: ['react', 'software-engineering']
+---
+
+import Link from '@components/Link.astro';
+import BlogImage from '@components/BlogImage.astro';
+
+Keyboard handling is an important consideration when building web applications. Some people prefer to only use the keyboard where as others are restricted and can only use the keyboard. Adding keyboard shortcuts to your application ensures that those people are able to use it to the same extent as a user with a mouse can.
+
+Some defaults are included by browsers, i.e. tabbing between `input` elements in a form or submitting it by pressing `Enter`. The shortcuts I'm covering in this article are to enable a user to more easily navigate around your application and interact with it's behavior.
+
+## Example application
+
+Lets create a basic React project to work with. We'll take advantage of `vite` to create and run the project.
+
+To create the project, run `npx create vite@latest`, give it a name and then choose `React` followed by `Typescript`. This will generate a skeleton React Typescript project for us to use. Now replace the contents of the `src/App.css` with the following:
+```tsx
+import { useState } from 'react'
+
+function App() {
+  const [page] = useState('one');
+  const [count, setCount] = useState(0)
+
+  return (
+    <>
+      <p>Current count: {count}</p>
+      <button onClick={() => setCount(count => count + 1)}>Inc</button>
+      {page === 'one' && <PageOne />}
+      {page === 'two' && <PageTwo />}
+    </>
+  )
+}
+
+const PageOne = () => {
+  return <p>Page One</p>;
+};
+
+const PageTwo = () => {
+  return <p>Page Two</p>;
+};
+
+export default App
+```
+
+Then replace the contents of `src/index.css` with the following to give us basic centered content:
+```css
+html,body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+```
+
+Running `npm run dev` and visiting <Link external href="http://localhost:5173">localhost:5173</Link> should now give you a page looking something like this
+
+<BlogImage src="/img/blog/react-keyboard-shortcuts-1.png" alt="Base example application showing a count with an increment button as well as the text Page One" />
+
+Now we're ready to add some keyboard shortcuts!
+
+## Keyboard event handlers
+Your first thought might be to add an event handler to the `App` component like this
+```tsx
+function App() {
+  // ...
+
+  document.addEventListener('keydown', (event: KeyboardEvent) => {
+    console.log(`key pressed: ${event.key}`);
+  });
+
+  return (
+    ...
+  )
+}
+```
+
+which does work, however there is a bug due to the way that React works. If we check the browser console we can see that we're successfully logging the keys that are pressed but we're getting multiple log lines every time we press a key. This is due to the fact that when React rerenders a component, it executes the entire function again. As we've just added an event listener directly in the body of the function component, we're adding an event listener every time it rerenders.
+
+We can make the situation even worse by incrementing the counter as when we change/update state, React rerenders the component. If you click the `Inc` button several times and then press a key, you'll see even more logs in the console!
+
+So we need a method of cleaning up event listeners when React rerenders a component.
+
+### Using `useEffect`
+
+The `useEffect` hook gives us the ability to run code on mount and unmount which would let us manage our event handler in a much better way. Lets start by moving the event handler code into the `useEffect` hook
+
+```tsx
+import { useEffect, useState } from 'react'
+
+function App() {
+  // ...
+
+  useEffect(() => {
+    document.addEventListener('keydown', (event: KeyboardEvent) => {
+      console.log(`key pressed: ${event.key}`);
+    });
+  }, []);
+
+  return (
+    ...
+  )
+}
+```
+
+Doing this gets us closer as now updating the count doesn't increase the log lines but there are still multiple log lines. This is because in `src/main.tsx`, our `App` component is wrapped in `React.StrictMode` which causes all components to be mounted, unmounted, and then remounted again. The idea behind this is to make sure that your components correctly handle being recreated and remounted. You can imaging though, if we were to add the event handler in one of the `Page` components, every time we switched pages we would add a new handler.
+
+So we need to make sure that our event listener stops listening when we unmount out component. `useEffect` allows us to return a function that will be executed when the component is unmounted so we can use that to clear up our event listener. We could use the `removeEventListener` function, however I think it's a lot cleaner to use an `AbortController`!
+
+```tsx
+import { useEffect, useState } from 'react'
+
+function App() {
+  // ...
+
+  useEffect(() => {
+    const aborter = new AbortController();
+    document.addEventListener(
+      "keydown",
+      (event: KeyboardEvent) => {
+        console.log(`key pressed: ${event.key}`);
+      },
+      { signal: aborter.signal }
+    );
+
+    return () => aborter.abort();
+  }, []);
+
+  return (
+    ...
+  )
+}
+```
+
+Here we have created a new `AbortController`, passed it's `signal` property in an options object to the third argument of the `addEventListener` function, and then returned a function that calls the `AbortController`'s `abort` function. This will get called when the component unmounts and stop the event listener!
+
+### Adding a useful shortcut
+
+Currently, our application has no way of navigating to page two. Lets change that by adding a keyboard shortcut to switch the page!
+
+```diff
+@@ -1,7 +1,7 @@
+ import { useEffect, useState } from "react";
+
+ function App() {
+-  const [page] = useState("one");
++  const [page, setPage] = useState("one");
+   const [count, setCount] = useState(0);
+
+   useEffect(() => {
+@@ -9,7 +9,14 @@ function App() {
+     document.addEventListener(
+       "keydown",
+       (event: KeyboardEvent) => {
+-        console.log(`key pressed: ${event.key}`);
++        switch (event.key) {
++          case "1":
++            setPage("one");
++            break;
++          case "2":
++            setPage("two");
++            break;
++        }
+       },
+       { signal: aborter.signal }
+     );
+```
+
+Now we can go to our app in the browser and press `1` and `2` to switch between pages! Lets add another two cases to our event handler to let us increment and decrement the count.
+
+```diff
+@@ -16,6 +16,12 @@ function App() {
+           case "2":
+             setPage("two");
+             break;
++          case "+":
++            setCount((count) => count + 1);
++            break;
++          case "-":
++            setCount((count) => count - 1);
++            break;
+         }
+       },
+       { signal: aborter.signal }
+```
+
+Now we can press the `+` key to increment the count and `-` to decrement it again!
+
+## Targeting specific elements
+
+So far, we have only implemented keyboard events on the document, meaning that no matter what element you have focused when you press the key, it will trigger our handler. If we only want to execute code when keys are pressed in a specific element, we can use the `onKeyDown` prop. This takes a function that receives a `KeyboardEvent` where the `target` and `currentTarget` properties are the element that the handler was added to.
+
+```diff
+@@ -41,7 +41,16 @@ function App() {
+ }
+
+ const PageOne = () => {
+-  return <p>Page One</p>;
++  const handleKeyDown = (event: KeyboardEvent | React.KeyboardEvent) => {
++    console.log(`pressed ${event.key} in input`);
++  };
++
++  return (
++    <>
++      <p>Page One</p>
++      <input onKeyDown={handleKeyDown} />
++    </>
++  );
+ };
+
+ const PageTwo = () => {
+```
+
+Now when we type in this input, we also log each key that was pressed.
+
+## Extracting the logic into a hook
+It's clear that this logic could be useful in lots of places in an application but adding this code everywhere causes a lot of duplication. We can create a hook to give us this functionality and make adding shortcuts to our application even easier! If we further extract out the event handler, we can create a function that returns a function that we can pass to the `onKeyDown` prop, keeping our keyboard handling code consistent regardless of where we are handling key presses.
+
+```diff
+@@ -1,5 +1,28 @@
+ import { useEffect, useState } from "react";
+
++type Shortcuts = Record<
++  string,
++  (event: KeyboardEvent | React.KeyboardEvent) => void
++>;
++
++const useKeyboardShortcuts = (shortcuts: Shortcuts) => {
++  useEffect(() => {
++    const aborter = new AbortController();
++    document.addEventListener("keydown", getKeypressHandler(shortcuts), {
++      signal: aborter.signal,
++    });
++
++    return () => aborter.abort();
++  }, [shortcuts]);
++};
++
++const getKeypressHandler = (shortcuts: Shortcuts) => {
++  return (event: KeyboardEvent | React.KeyboardEvent) => {
++    const handler = shortcuts[event.key];
++    if (handler) {
++      handler(event);
++    }
++  };
++};
++
+ function App() {
+   const [page, setPage] = useState("one");
+   const [count, setCount] = useState(0);
+```
+
+Now we can really simplify our component code by using this function & hook instead of manually setting up and cancelling our event listeners!
+
+```diff
+diff --git a/src/App.tsx b/src/App.tsx
+index 41dd27f..cadcdac 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -27,31 +27,12 @@ function App() {
+   const [page, setPage] = useState("one");
+   const [count, setCount] = useState(0);
+ 
+-  useEffect(() => {
+-    const aborter = new AbortController();
+-    document.addEventListener(
+-      "keydown",
+-      (event: KeyboardEvent) => {
+-        switch (event.key) {
+-          case "1":
+-            setPage("one");
+-            break;
+-          case "2":
+-            setPage("two");
+-            break;
+-          case "+":
+-            setCount((count) => count + 1);
+-            break;
+-          case "-":
+-            setCount((count) => count - 1);
+-            break;
+-        }
+-      },
+-      { signal: aborter.signal }
+-    );
+-
+-    return () => aborter.abort();
+-  }, []);
++  useKeyboardShortcuts({
++    "1": () => setPage("one"),
++    "2": () => setPage("two"),
++    "+": () => setCount((count) => count + 1),
++    "-": () => setCount((count) => count - 1),
++  });
+ 
+   return (
+     <div>
+@@ -64,9 +45,9 @@ function App() {
+ }
+ 
+ const PageOne = () => {
+-  const handleKeyDown = (event: KeyboardEvent | React.KeyboardEvent) => {
+-    console.log(`pressed ${event.key} in input`);
+-  };
++  const handleKeyDown = getKeypressHandler({
++    a: () => console.log("you pressed a!"),
++  });
+ 
+   return (
+     <>
+```
+
+Using the hook results in code that is much easier/faster to read and allows us to reuse the logic easily in other parts of the application.
+
+**Note:** This isn't an exact replication of the original handling in the `PageOne` component as we are now reacting to a single key instead of any key.
+
+## Summary
+We've ended up with a basic hook/function to allow us to easily add keyboard shortcuts to our React application. Hopefully this enables us to more effectively support user's who have a preference or are restricted to only using the keyboard to interact with our site. I haven't touched on allowing us to define if we want events to bubble by conditionally calling `event.preventDefault()` and `event.stopPropagation()` which allows you to stop global shortcuts from triggering when scoped shortcuts are triggered. We could also improve our hook to allow adding modifiers to the shortcuts, i.e. `ctrl+a` or `shift+a`. Hopefully you can use this hook as a starting point and add to it when you need more features!
