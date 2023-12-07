@@ -8,7 +8,7 @@
     "start": "astro dev --host",
     "build": "astro build",
     "preview": "astro preview",
-    "fmt": "prettier --write ."
+    "fmt": "prettier --write ./src"
   },
   "devDependencies": {
     "@astrojs/mdx": "^2.0.0",
