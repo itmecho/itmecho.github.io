@@ -2,9 +2,10 @@
 import Layout from './Layout.astro';
 import Link from '@components/Link.astro';
 import Tag from '@components/Tag.astro';
+import {marked} from 'marked';
 
 const { frontmatter, headings } = Astro.props;
-const { title, date, minutesRead, disableTOC = false, tags = [] } = frontmatter;
+const { title, date, minutesRead, disableTOC = false, tags = [], changelog = [] } = frontmatter;
 
 const indentMap = {
   2: 'ml-8',
@@ -24,7 +25,7 @@ const indentMap = {
   </div>
   {tags && (
     <div class="mt-4 flex gap-2">
-      {tags.map((tag) => (
+      {tags.map((tag: string) => (
         <Link href={`/blog/tags/${tag}`}>
           <Tag tag={tag} />
         </Link>
@@ -32,6 +33,7 @@ const indentMap = {
     </div>
   )}
   <article class='mt-12 text-xl leading-loose'>
+    {changelog.map((content: string) => <div set:html={marked(content)} />)}
     {!disableTOC && headings.length > 0 && (
       <nav class="mb-16">
         <h2>Contents</h2>

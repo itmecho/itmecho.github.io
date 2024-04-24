@@ -4,6 +4,11 @@ title: Systemd unit failure notification
 description: Using systemd to send a slack notification when another systemd unit fails
 date: 2020-06-15
 tags: ['linux']
+changelog: 
+  - |
+    **UPDATE (2024-04-23):** Changed `Restart=never` to `Restart=no` as the former is no longer valid in current versions of systemd. Also switched to using the `%N` specifier instead of hard coding service names in `OnFailure` setting.
+
+    Thanks Antonio Amaddio for the updates!
 ---
 
 import Link from '@components/Link.astro';
@@ -68,7 +73,7 @@ Description=Systemd alert
 [Service]
 Type=oneshot
 ExecStart=/usr/local/bin/systemd-alert %i
-Restart=never
+Restart=no
 ```
 
 This is a super simple unit which will just execute the script `/usr/local/bin/systemd-alert`, passing the instance name as an argument. The instance name is defined when we start the unit by adding it after the `@` symbol in the service file name.
@@ -77,12 +82,12 @@ This is a super simple unit which will just execute the script `/usr/local/bin/s
 
 ## Triggering the alert
 
-Finally, we just need to add the `OnFailure` setting to the `Unit` section of another systemd unit we want to be alerted for. Once that unit enters the `failed` state, systemd will start the unit specified by `OnFailure`, sending the alert notification.
+Finally, we just need to add the `OnFailure` setting to the `Unit` section of another systemd unit we want to be alerted for. Once that unit enters the `failed` state, systemd will start the unit specified by `OnFailure`, sending the alert notification. We can use the `%N` specifier here which will get replaced with the name of the service minus the type suffix. You can see the full list of specifiers in the <Link external href="https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html#Specifiers">systemd man pages</Link>.
 
 ```ini
 [Unit]
 ...
-OnFailure=systemd-alert@nginx.service
+OnFailure=systemd-alert@%N.service
 
 [Service]
 ...
